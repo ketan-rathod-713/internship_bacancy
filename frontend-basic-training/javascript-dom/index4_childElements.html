@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexbox Cards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .parent-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px;
+        }
+
+        .card {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="parent-container1">
+        <div class="card">Card 1</div>
+        <div class="card">Card 2</div>
+        <div class="card">Card 3</div>
+        <div class="card">Card 4</div>
+        <div class="card">Card 5</div>
+    </div>
+
+    <div class="parent-container">
+        <div class="card">Card A</div>
+        <div class="card">Card B</div>
+        <div class="card">Card C</div>
+        <div class="card">Card D</div>
+        <div class="card">Card E</div>
+    </div>
+
+    <footer>
+        <div>Footer Item 1</div>
+        <div>Footer Item 2</div>
+    </footer>
+
+
+    <script>
+       var pc1 = document.querySelector(".parent-container1")
+       console.log(pc1.childNodes) // it returns 10 means 5 div and 5 text nodes
+       console.log(pc1.childElementCount) // total count of child elements
+       console.log(pc1.children) // to get the type of element // LIVE
+
+       let firstChild = pc1.firstChild; console.log(firstChild);
+       let firstElementChild = pc1.firstElementChild; console.log(firstElementChild);
+
+    //    same for lastChild and lastElementChild
+
+
+
+    </script>
+</body>
+</html>

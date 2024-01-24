@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        input {
+            padding: 10px 20px;
+            border: 1px solid black;
+        }
+
+        div::before {
+            content: "wow great ";
+        }
+    </style>
+</head>
+<body>
+    <h1>Heading</h1>
+    <h1>This is second heading ha ha</h1>
+    <h1>3rd heading</h1>
+    <div></div>
+    <input type="text" name="name">
+    <input type="text" name="name">
+    <input type="text" name="name">
+
+    <ul>
+        <li>List 1</li>
+        <li>List 1</li>
+        <li>List 1</li>
+        <li>List 1</li>
+        <li>List 1</li>
+        <li>List 1</li>
+        <li>List 1</li>
+
+    </ul>
+
+    <audio src="" autoplay></audio>
+
+    <!--  what do mean by live -->
+
+    <script>
+        var nameElements = document.getElementsByName("name");
+        console.log(nameElements) // return nodelist
+        for(var element of nameElements){
+            // element.textContent = "This is new content"
+            
+        }
+
+        var h1Count = document.getElementsByTagName("h1");
+        console.log(h1Count.length)
+        // alert(h1Count.length)
+
+        var div = document.querySelector("div")
+        var newElement = document.createElement("h1")
+        newElement.textContent = "this is a heading"
+        div.appendChild(newElement)
+        // alert(h1Count.length)
+
+
+        var audioTagByAttribute = document.querySelector("[autoplay]")
+        console.log(audioTagByAttribute)
+        // such thing can be usefull for the radio button as names will be same and then we can iterate on it and can check if which of them is selected or so on
+
+        var items2 = document.querySelector("ul > li:nth-child(2)")
+        items2.textContent = "wow it is great";
+
+        // also select pseudo elements
+        var divBefore = document.querySelector("div::first-char")
+        console.log(divBefore)
+        // no output for ::before and ::after hence not usefull
+    </script>
+</body>
+</html>
+
+<!-- The getElementsByTagName() method accepts a tag name and returns a live HTMLCollection of elements with the matching tag name in the order which they appear in the document. -->

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexbox Cards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .parent-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px;
+        }
+
+        .card {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="parent-container">
+        <div class="card">Card 1</div>
+        <div class="card">Card 2</div>
+        <div class="card">Card 3</div>
+        <div class="card">Card 4</div>
+        <div class="card">Card 5</div>
+    </div>
+
+    <div class="parent-container">
+        <div class="card">Card A</div>
+        <div class="card">Card B</div>
+        <div class="card">Card C</div>
+        <div class="card">Card D</div>
+        <div class="card">Card E</div>
+    </div>
+
+    <footer>
+        <div>Footer Item 1</div>
+        <div>Footer Item 2</div>
+    </footer>
+
+
+    <script>
+        // parent node -> read only
+        var firstcard = document.querySelector(".card");
+        console.log(firstcard.parentNode) // it is read only
+
+        let nextSibling = firstcard.nextElementSibling;
+        console.log(nextSibling)
+        nextSibling.textContent = "This right sibling of card 1"
+
+        // nextSibling.previousSibling.textContent = "This is left sibling of card 2"
+        // why error -> there is difference between previous sibling and previousElementSibling
+        const card1 = nextSibling.previousElementSibling;
+        card1.textContent = "This left sibling of card 2"
+
+    </script>
+</body>
+</html>

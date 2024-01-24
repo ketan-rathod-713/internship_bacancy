@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexbox Cards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .parent-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px;
+        }
+
+        .card {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .note {
+            padding: 20px 20px;
+            border: 2px solid goldenrod;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="parent-container1">
+        <div class="card">Card 1</div>
+        <div class="card">Card 2</div>
+        <div class="card">Card 3</div>
+        <div class="card">Card 4</div>
+        <div class="card">Card 5</div>
+    </div>
+
+    <div class="parent-container">
+        <div class="card">Card A</div>
+        <div class="card">Card B</div>
+        <div class="card">Card C</div>
+        <div class="card">Card D</div>
+        <div class="card">Card E</div>
+    </div>
+
+    <ul class="first-list">
+        <li>Task 1</li>
+        <li>Task 2</li>
+        <li>Task 3</li>
+        <li>Task 4</li>
+        <li>Task 5</li>
+    </ul>
+
+    <ul class="second-list">
+        <li>Task 1</li>
+        <li>Task 2</li>
+        <li>Task 3</li>
+        <li>Task 4</li>
+        <li>Task 5</li>
+    </ul>
+
+    <div id="something">
+        JavaScript textContent Demo!
+        <span style="display:none">Hidden Text!</span>
+        <!-- my comment -->
+    </div>  
+
+    <footer>
+        <div>Footer Item 1</div>
+        <div>Footer Item 2</div>
+    </footer>
+
+
+    <script>
+       var newDiv = document.createElement("div")
+       newDiv.id = "newDiv1"
+       newDiv.textContent = "This is the content of the DIV"
+       newDiv.className = "note"
+
+       document.body.appendChild(newDiv)
+    //    append is modern one // for appending multiple childs annd also to follow some order
+    // appendChild is old and it appends element at the end of the parent.
+
+    // Sometimes, you may want to load a JavaScript file dynamically. To do this, you can use the document.createElement() to create the script element and add it to the document.
+
+
+    // appendChildExample
+    var firstList = document.querySelector(".first-list")
+    var secondList = document.querySelector(".second-list")
+    firstList.firstElementChild.textContent =  "this is child is going to be in list 2"
+
+    const taks1OfFirstList = firstList.firstElementChild;
+    secondList.appendChild(taks1OfFirstList)
+
+        // textContent Demo
+        var note = document.querySelector("#something")
+        console.log(note.textContent) // it will print the text of it and also of its all decendents by concatinating with each ha ha.. Interesting..
+
+        // textContent vs. innerText
+        // On the other hand, the innerText takes the CSS style into account and returns only human-readable text. For example:
+
+        // innerText is expensive operation.
+
+        // When you set textContent on a node, all the node’s children will be removed and replaced by a single text node with the newText value. For example:
+        // Do not use innerHTML to set new contents that you have no control to avoid a security risk.
+
+    </script>
+</body>
+</html>
