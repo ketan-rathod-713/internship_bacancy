@@ -25,4 +25,17 @@ func main() {
 	default:
 		fmt.Println("This is default for 5 and 6")
 	}
+
+
+	// Switch without condtion is same as that of if else struct
+
+	j := 20
+	switch {
+	case j < 20:
+		fmt.Println("less then 20")
+	case j < 40:
+		fmt.Println("less then 40")
+	case j == 40:
+		fmt.Println("Equal to 40")
+	}
 }

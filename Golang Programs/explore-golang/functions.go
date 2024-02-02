@@ -31,8 +31,8 @@ func main() {
 		fmt.Println("Wow i am running directly")
 	}()
 
-	
-
+	c, d := namedReturn(12, 10)
+	fmt.Println("Returned values are ", c, d)
 }
 
 func variadicFuncSum(nums ...int) {
@@ -54,4 +54,13 @@ func sum(a int, b int) int {
 // auto int to all
 func sum2(a, b, c int) int {
 	return a + b + c
+}
+
+// named return value
+
+func namedReturn(a, b int) (x, y int) {
+	fmt.Println("X and Y are initialised already with values ", x, y)
+	x = a + b
+	y = a * b
+	return
 }
