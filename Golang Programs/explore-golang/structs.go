@@ -33,4 +33,24 @@ func main() {
 	s.name = "something"
 
 	// anonymous structs are also valid
+
+	directlyUsingStruct()
+}
+
+func directlyUsingStruct() {
+
+	// Here just like bool we can also place a struct here. which would be like anonymous
+	r := []bool{true, false, true, true, false, true}
+	fmt.Println(r)
+
+	s := []struct {
+		i int
+		b bool
+	}{
+		{2, true},
+		{3, false},
+		{4, true},
+	}
+
+	fmt.Println(s)
 }

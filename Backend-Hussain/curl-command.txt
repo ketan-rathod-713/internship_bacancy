@@ -1,0 +1,6 @@
+ 1420  curl -v --trace out.txt http://google.com
+ 1431  cat curl-command.txt | grep 1420
+ 1432  cat curl-command.txt | grep 1420 > curl-command.txt 
+ 1438  history | grep 1420
+ 1439  history | grap 1420 > curl-command.txt 
+ 1440  history | grep 1420 > curl-command.txt 

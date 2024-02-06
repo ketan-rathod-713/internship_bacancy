@@ -29,4 +29,15 @@ func main() {
 	// in same line
 	n := map[string]int{"foo": 1, "bar": 2}
 	fmt.Println(n, reflect.TypeOf(n))
+
+	mapLiterals()
+}
+
+func mapLiterals() {
+	mp := map[string]int{
+		"foo":   1,
+		"great": 2,
+	}
+
+	fmt.Println(mp)
 }
