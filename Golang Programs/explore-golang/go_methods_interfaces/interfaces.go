@@ -27,35 +27,7 @@ func main() {
 	fmt.Println(shape.Area())
 
 	// Above works fine but why address required for below interface Shape
-	var s Shape 
+	var s Shape
 	s = &Circle{radius: 1} // TODO: Why Need of address here, Else Producing Error
 	fmt.Println(s.Area())
 }
-
-// Interfaces are implemented implicitly we don;t need to specify it
-
-// package main
-
-// import "fmt"
-
-// type I interface {
-// 	M()
-// }
-
-// type T struct {
-// 	S string
-// }
-
-// // This method means type T implements the interface I,
-// // but we don't need to explicitly declare that it does so.
-// func (t T) M() {
-// 	fmt.Println(t.S)
-// }
-
-// func main() {
-// 	var i I = T{"hello"}
-// 	i.M()
-// }
-
-// interface values
-// (value, type) // stores this value under the hood
