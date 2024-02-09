@@ -1,0 +1,332 @@
+The system uses no more than NAMEDATALEN-1 bytes of an identifier; longer names can be written in commands, but they will be truncated. By default, NAMEDATALEN is 64 so the maximum identifier length is 63 bytes. If this limit is problematic, it can be raised by changing the NAMEDATALEN constant in src/include/pg_config_manual.h.
+
+Key words and unquoted identifiers are case-insensitive.
+
+Convention - key words in uppercase and names in lowercase
+
+delimited identifier or quoted identifier. -> "select" will be taken as identifier while select would be taken as keyword.
+
+
+UPDATE "my_table" SET "a" = 5;
+Quoting an identifier also makes it case-sensitive, whereas unquoted names are always folded to lower case.
+
+"Foo" and "FOO" are different
+
+Three kinds of implicitly-typed constants in PostgreSQL: strings, bit strings, and numbers.
+
+--
+Two string constants that are only separated by whitespace with at least one newline are concatenated and effectively treated as if the string had been written as one constant.
+SELECT 'foo'
+'bar';
+is same as
+SELECT 'foobar';
+
+SELECT 'foo'      'bar'; // but this is not valid
+
+----
+PostgreSQL also accepts “escape” string constants just like c
+Can be done by writting E (upper or lower case) just before the opening single quote.
+ e.g., E'foo'. 
+ Then i can use \b \t \n etc.
+ 
+ ----
+ Dollar quoting ( when too many single quotes in string contstant )
+
+$$Dianne's horse$$
+$SomeTag$Dianne's horse$SomeTag$
+
+----
+Column Reference in query 
+correlation.columnname
+
+----
+Positional Parameter
+Using $ dollar sign
+$1 it takes the first parameter passed in function argument.
+
+-- CREATE FUNCTION dept(INTEGER) RETURNS text
+--     AS $$ SELECT name from school.student where id = $1; $$
+--     LANGUAGE SQL;
+
+-- SELECT dept(5);
+
+-- DROP FUNCTION dept;
+
+----
+Subscripts
+If expression yields type array then we can access element by
+expression[subscript]
+
+For array slice
+expression[lower_subscript:upper_subscript]
+
+CREATE TABLE IF NOT EXISTS arrays.schools(
+	id SERIAL,
+  names TEXT[],
+  ranks INTEGER[]
+);
+
+INSERT INTO arrays.schools (ranks, names) VALUES
+  (ARRAY[1, 2, 3, 4, 5], ARRAY['John', 'Alice', 'Bob']),
+  (ARRAY[10, 20, 30], ARRAY['Mary', 'David']);
+  
+SELECT ranks[2] AS third_element FROM arrays.schools WHERE id = 1;
+
+SELECT ranks[2:3] AS third_element FROM arrays.schools WHERE id = 1;
+
+----
+FIeld Selection
+
+expression.fieldname
+
+We can also create a composite type in sql
+
+CREATE TYPE address AS (
+    street TEXT,
+    city TEXT,
+    zipcode TEXT
+);
+
+It is very handy when we are using complex data structures.
+
+-- Create a composite type
+CREATE TYPE address AS (
+    street TEXT,
+    city TEXT,
+    zipcode TEXT
+);
+
+-- Create a table with a composite column
+CREATE TABLE my_table (
+    id SERIAL PRIMARY KEY,
+    person_name TEXT,
+    person_address address
+);
+
+-- Insert some data into the table
+INSERT INTO my_table (person_name, person_address) VALUES
+  ('John Doe', ROW('123 Main St', 'Anytown', '12345')),
+  ('Alice Smith', ROW('456 Elm St', 'Sometown', '67890'));
+
+-- Accessing fields within the composite type
+-- Access the city field within the person_address composite type in the first row
+SELECT (person_address).city AS person_city FROM my_table WHERE id = 1;
+
+-- Access the street field within the person_address composite type in the second row
+SELECT (person_address).street AS person_street FROM my_table WHERE id = 2;
+
+----
+Operator Invocations
+
+----
+Function calls
+function_name ([expression [, expression ... ]] )
+
+----
+Aggregate Expressions
+
+An aggregate expression represents the application of an aggregate function across the rows selected by a query. An aggregate function reduces multiple inputs to a single output value, such as the sum or average of the inputs
+
+SYNTAX
+aggregate_name (expression [ , ... ] [ order_by_clause ] ) [ FILTER ( WHERE filter_clause ) ] // Default is ALL
+aggregate_name (ALL expression [ , ... ] [ order_by_clause ] ) [ FILTER ( WHERE filter_clause ) ] // for ALL expression invokes once for each row
+aggregate_name (DISTINCT expression [ , ... ] [ order_by_clause ] ) [ FILTER ( WHERE filter_clause ) ] // for DISTINCT : invokes the aggregate once for each distinct value of the expression.
+aggregate_name ( * ) [ FILTER ( WHERE filter_clause ) ] // generally used for count(*) only
+aggregate_name ( [ expression [ , ... ] ] ) WITHIN GROUP ( order_by_clause ) [ FILTER ( WHERE filter_clause ) // used for ordered-set aggregate functions
+
+Most aggregate functions ignore null inputs, so that rows in which one or more of the expression(s) yield null are discarded. This can be assumed to be true, unless otherwise specified, for all built-in aggregates.
+
+for eg. SELECT count(city) from school.student;  -- it ignores null values in city column
+
+For example, count(*) yields the total number of input rows; count(f1) yields the number of input rows in which f1 is non-null, since count ignores nulls; and count(distinct f1) yields the number of distinct non-null values of f1.
+
+Some aggregate func don't require ordering for eg. sum, min, max etc.
+While some require such as array_agg, string_agg : Hence for them there is special clause which is ORDER BY. because ordering do matter in such aggregate functions.
+
+for eg. SELECT array_agg(a ORDER BY b DESC) FROM table;
+
+SELECT string_agg(a, ',' ORDER BY a) FROM table; // ORDER BY goes after all the arguments completed.
+
+SELECT string_agg(a ORDER BY a, ',') FROM table;  -- This is incorrect
+
+FOR EG.
+SELECT string_agg(DISTINCT city, ',') FROM school.student;
+SELECT array_agg(DISTINCT city) FROM school.student;
+
+TODO: see extra details after this doc 4.2.7
+
+----
+Window Function Calls
+A window function call represents the application of an aggregate-like function over some portion of the rows selected by a query. 
+Just like sliding window ha ha
+Here we are not grouping all selected rows just like non window aggregate calls ->  each row remains separate in the query output
+However the window function has access to all the rows that would be part of the current row's group according to the grouping specification PARTITION BY
+
+SYNTAX 
+function_name ([expression [, expression ... ]]) [ FILTER ( WHERE filter_clause ) ] OVER window_name
+function_name ([expression [, expression ... ]]) [ FILTER ( WHERE filter_clause ) ] OVER ( window_definition )
+function_name ( * ) [ FILTER ( WHERE filter_clause ) ] OVER window_name
+function_name ( * ) [ FILTER ( WHERE filter_clause ) ] OVER ( window_definition )
+
+window_definition syntax
+[ existing_window_name ]
+[ PARTITION BY expression [, ...] ]
+[ ORDER BY expression [ ASC | DESC | USING operator ] [ NULLS { FIRST | LAST } ] [, ...] ]
+[ frame_clause ]
+
+where frame_start and frame_end can be one of
+
+UNBOUNDED PRECEDING
+offset PRECEDING
+CURRENT ROW
+offset FOLLOWING
+UNBOUNDED FOLLOWING
+
+and frame_exclusion can be one of
+
+EXCLUDE CURRENT ROW
+EXCLUDE GROUP
+EXCLUDE TIES
+EXCLUDE NO OTHERS
+
+Similar to an aggregate function, a window function operates on a set of rows. However, it does not reduce the number of rows returned by the query.
+
+SELECT
+	product_name,
+	price,
+	group_name,
+	AVG (price) OVER (
+	   PARTITION BY group_name
+	)
+FROM
+	products
+	INNER JOIN 
+		product_groups USING (group_id);
+		
+It gives avg price for each column and thus not reduce the columns.
+
+Note that a window function always performs the calculation on the result set after the JOIN, WHERE, GROUP BY and HAVING clause and before the final ORDER BY clause in the evaluation order.
+
+window_function(arg1, arg2,..) OVER (
+   [PARTITION BY partition_expression]
+   [ORDER BY sort_expression [ASC | DESC] [NULLS {FIRST | LAST }])  
+   
+The PARTITION BY clause is optional. If you skip the PARTITION BY clause, the window function will treat the whole result set as a single partition.
+
+The ORDER BY clause specifies the order of rows in each partition to which the window function is applied.
+
+The ORDER BY clause uses the NULLS FIRST or NULLS LAST option to specify whether nullable values should be first or last in the result set. The default is NULLS LAST option.
+
+The frame_clause defines a subset of rows in the current partition to which the window function is applied. This subset of rows is called a frame.
+
+SEE MORE EXAMPLES OF ABOVE
+ TODO:
+ 
+----
+Type Casts
+SYNTAX
+CAST ( expression AS type )
+expression::type
+
+SELECT CAST('42' AS INTEGER);
+
+SELECT '42'::INTEGER; // only in postgresql
+
+----
+Collation Expressions
+used for comparison and sorting you can change it.
+
+----
+4.2.11. Scalar Subqueries 
+Returns exactly one row
+err if more then one row
+if subquery returns no row then no error ha ha
+
+subquery can refer to variables from the surrounding query which will act as constants during any one evalution of the subquery.
+
+// finding largest city population in state
+SELECT name, (SELECT max(pop) FROM cities WHERE cities.state = states.name)
+    FROM states;
+    
+4.2.12. Array Constructors
+https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-COLLATE-EXPRS
+Continue from here.
+
+SELECT ARRAY[1,2,22.7];
+This creates an array.
+
+We can also cast sub query result to array as follows
+
+SELECT ARRAY(SELECT age from school.student);
+
+The subquery must return a single column.
+
+----
+ROW constructor
+
+SELECT ROW(1,2.5,'this is a test');
+
+SELECT ROW(school.student.*, 42) FROM school.student; // It takes all row values from student and then add 42 at the end of each row.
+
+By default, the value created by a ROW expression is of an anonymous record type. If necessary, it can be cast to a named composite type — either the row type of a table, or a composite type created with CREATE TYPE AS. An explicit cast might be needed to avoid ambiguity
+
+SELECT ROW(school.student.*) IS NULL FROM school.student; -- Detect all null rows
+
+----
+4.2.14. Expression Evaluation Rules 
+dont do side effects in where having clause
+
+Continue;;
+
+
+
+----
+CALLING FUNCTION USING 
+1. Positional -> ('Hello', 'World')
+2. Named Notation ->in argument we can write (a => 'Hello', b => 'World', uppercase => true)
+3. Mixed is also valid 
+
+______
+5. Data Definition
+
+creating table
+
+for default value something ( defualt null )
+for eg. price numeric DEFAULT 9.99
+
+id integer DEFAULT nextval('products_id_seq') // nextVal is a function which gives next value in given sequence. Here it is giving next value in products table with id column and sequence.
+
+SHORT HAND
+id SERIAL // ha ha
+
+5.3 Generated Column
+
+special column that is always calculated from other columns.
+2 types
+stored - when doing insert / update it get stored in table as if it was a normal column.
+virtual - for read purposes
+
+for eg.
+CREATE TABLE people (
+    ...,
+    height_cm numeric,
+    height_in numeric GENERATED ALWAYS AS (height_cm / 2.54) STORED
+);
+
+FOR EG.
+-- CREATE TABLE data_definition.generate_column(
+-- 	data_km int,
+--   data_meter int GENERATED ALWAYS AS (data_km * 1000) STORED
+-- );
+
+-- INSERT INTO data_definition.generate_column(data_km) VALUES(34);
+
+UPDATE data_definition.generate_column
+SET data_km = 45;
+
+TODO: see more if need.
+
+----
+5.4 Contraints
+
+

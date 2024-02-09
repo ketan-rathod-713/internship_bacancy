@@ -1,0 +1,73 @@
+Transaction
+
+single piece of work
+Begin Tx
+
+Commit Tx
+
+ACID Property in RDBMS
+Atomicity, Consistency, Isolation and Durability
+
+Collection of queries
+
+Eg. Account Deposit - select update update
+
+Atomicity
+All queries must succeed. if one fails all should rollback.
+
+Isolation
+Can my inflight transaction see changes made by other transactions ?
+get Read Phenomena because of lack of isolation ( dirty read and all that )
+Isolation Levels
+
+Isolation Read Phenomena
+1. Dirty Reads ( if another tx made changes but later it rollbacked hence i read dirty data )
+2. Non repeatable reads ( I read my value and then i read again and i didn't get same result )
+3. Phantom Reads (You can not control new entries to be inserted ha ha)
+4. Lost updates ( when you change something  and some other tx overwrote your data before you commit ). Hence your change is lost.
+
+Dirty Reads
+read data in TX1
+then in TX2 someone updated that data
+then read again in TX1 hence dirty read
+
+Non repeatable read
+May be we are reading twice the same value
+read in TX1 then write in TX2
+and commit in TX2
+THen read in TX1
+
+Here read is legit read but it is not same as previous read and hence producing non repeatable read.
+
+Phantom Read
+TX1 - read
+TX2 - Inserted data
+TX1 - select. - you are getting extra rows of data. This is little bit hard to avoid it. one of the way is serialization.
+
+Isolation Levels 
+Levels that are implemented by dbms to fix those phenomena.
+
+1. Read Uncommited
+- No isolation, any changes from the outside is visible to the transaction
+
+2. Read commited // most time it is one of the best
+- Each query in transaction only sees commited stuff
+
+3. Repeatable Read
+- Each quer in tx only sees commited updates at the beginning of tx
+We can also add exclusive lock. No body can write if i am read. shared lock.
+if anybody want to access then give it to them.
+
+4. Serializable
+- tx are serialised. Each tx has to be serializable.
+- Easiest but slowest.
+
+Performence goes down from 1 to 4.
+
+TODO :Transaction Complete from Hussain
+TODO :Normalization ( all techniques )
+TODO :Postgresql SQL commands
+TODO : https://www.youtube.com/watch?v=nuBi2XbHH18 Row level locks
+
+
+
