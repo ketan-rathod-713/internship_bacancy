@@ -6,51 +6,28 @@ import (
 	"net/http"
 )
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/hello" {
-		http.Error(w, "404 not found.", http.StatusNotFound)
+func hello2Handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.URL.Path)
+	if r.URL.Path != "/hello2" {
+		http.NotFound(w, r)
+		return // here we have to return also ha ha
+	}
+
+	if r.Method != "POST" { // Only Allowing Post Request on this route.
+		http.Error(w, "Method is not supported.", http.StatusNotFound) // 3rd parameter is status code of response writter
 		return
 	}
 
-	if r.Method != "GET" {
-		http.Error(w, "Method is not supported.", http.StatusNotFound)
-		return
-	}
-
-	fmt.Fprintf(w, "Hello!")
-}
-
-func formHandler(w http.ResponseWriter, r *http.Request) {
-    if err := r.ParseForm(); err != nil {
-        fmt.Fprintf(w, "ParseForm() err: %v", err)
-        return
-    }
-    fmt.Fprintf(w, "POST request successful")
-    name := r.FormValue("name")
-    address := r.FormValue("address")
-
-    fmt.Fprintf(w, "Name = %s\n", name)
-    fmt.Fprintf(w, "Address = %s\n", address)
+	w.Write([]byte("hii ha ha"))
 }
 
 func main() {
-	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	fmt.Println("Request ha ha")
-	// 	w.Write([]byte("hello"))
-	// })
+	// We’ll use the HandleFunc function to add route handlers to the web server.
+	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello, world!"))
+	})
 
-	http.HandleFunc("/hello", helloHandler)
+	http.HandleFunc("/hello2", hello2Handler)
 
-	fileServer := http.FileServer(http.Dir("static")) // Creating file server at specified route
-	http.Handle("/", fileServer)         
-	
-	
-	// Handling Post Request
-	http.HandleFunc("/form", formHandler)
-
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Fatal(err)
-	}
-
-	// http.ListenAndServe(":8080", http.FileServer(http.Dir("static")))
+	log.Fatal(http.ListenAndServe(":8080", nil)) // Here nil  because we are setting up http2 here hence no need to define it.
 }
