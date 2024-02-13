@@ -329,4 +329,94 @@ TODO: see more if need.
 ----
 5.4 Contraints
 
+1. Check Constraint
+most basic one for boolean expreession checking.
+for eg.
+CREATE TABLE products (
+    product_no integer,
+    name text,
+    price numeric CHECK (price > 0)
+);
+
+we can give constaint a name so that we can refer it when error message produced.
+eg. price numeric CONSTRAINT postive_price (price > 0)
+
+We can also refer to several columns.
+CREATE TABLE products (
+    product_no integer,
+    name text,
+    price numeric CHECK (price > 0), -- column constaint
+    discounted_price numeric CHECK (discounted_price > 0), -- column constaint
+    CHECK (price > discounted_price)  -- table constraint
+);
+
+Also two conditions can be specified by using AND
+
+2. Not Null Constraint
+
+Column must not assume the null value.
+
+product_no integer NOT NULL,
+
+For more then one constraint : price numeric NOT NULL CHECK (price > 0)
+
+3. Unique Constriant
+UNIQUE
+
+To define a unique constraint for a group of columns, write it as a table constraint with the column names separated by commas:
+for eg. UNIQUE (a, c)
+
+by default we can still insert NULL values if UNIQUE constraint is there.
+The default behavior can be specified explicitly using NULLS DISTINCT. T
+
+if we don't want null values to be more then one then 
+UNIQUE NULLS NOT DISTINCT (product_no)
+
+// LET ME TRY IT
+WHY GIVING ERROR
+TODO:
+
+4. Primary Key
+UNIQUE + NOT NULL
+
+PRIMARY KEY (a, c)
+
+5. Foreign Keys
+CREATE TABLE orders (
+    order_id integer PRIMARY KEY,
+    product_no integer REFERENCES products (product_no),
+    quantity integer
+);
+
+Now it is impossible to create orders with non-NULL product_no entries that do not appear in the products table.
+
+We can also shorten above code
+CREATE TABLE orders (
+    order_id integer PRIMARY KEY,
+    product_no integer REFERENCES products,
+    quantity integer
+); // it will point to primary key of referencing table
+
+Also it can be group of columns.
+CREATE TABLE t1 (
+  a integer PRIMARY KEY,
+  b integer,
+  c integer,
+  FOREIGN KEY (b, c) REFERENCES other_table (c1, c2)
+);
+
+TODO: good docs read it 
+
+6. Exclusion Constraint ??
+
+----
+System Columns
+
+----
+Modifying tables
+https://www.postgresql.org/docs/current/ddl-alter.html
+
+----
+Privileges
+
 
