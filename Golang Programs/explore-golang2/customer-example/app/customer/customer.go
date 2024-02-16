@@ -29,12 +29,7 @@ func updateOneCustomer(db *gorm.DB, reqcustomer model.Customer, id string) error
 		return err
 	}
 
-	dbcust.FirstName = reqcustomer.FirstName
-	dbcust.LastName = reqcustomer.LastName
-	dbcust.Email = reqcustomer.Email
-	dbcust.Dateofbirth = reqcustomer.Dateofbirth
-	dbcust.Mobilenumber = reqcustomer.Mobilenumber
-	db.Save(&dbcust)
+	
 	return nil
 }
 
