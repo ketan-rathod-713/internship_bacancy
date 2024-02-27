@@ -1,14 +1,11 @@
 package main
 
-import (
-	"concurrency/channel"
-	"concurrency/goroutine"
-)
+import "concurrency/practice"
 
 func main() {
-	channel.Channel()
+	// channel.Channel()
 
-	channel.ChannelBuffering()
+	// channel.ChannelBuffering()
 
 	// goroutine.GoroutineCommunicationWithMain()
 
@@ -18,9 +15,13 @@ func main() {
 
 	// goroutine.SynchronousFanInFunction()
 
-	goroutine.FanInWithSelectExample()
+	// goroutine.FanInWithSelectExample()
 
-	goroutine.TimeoutMain()
+	// goroutine.TimeoutMain()
 
-	goroutine.TimeoutWholeConversionUsingSelectMain()
+	// goroutine.TimeoutWholeConversionUsingSelectMain()
+
+	// practice.TimeoutWithSelect()
+
+	practice.DaisyChain()
 }

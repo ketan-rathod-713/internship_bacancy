@@ -1,0 +1,5 @@
+package gocsvpackage
+
+func Marshal(){
+	
+}
