@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Websocket Tutorial</title>
+  </head>
+  <body>
+    <h1>Websocket Tutorial</h1>
+
+    <script>
+      const socket = new WebSocket("ws://localhost:8080/ws");
+
+      socket.onclose = function (e) {
+        console.log("Socket closed");
+      };
+      socket.onopen = function (e) {
+        console.log("Socket Opened");
+        socket.send("Hello from client side")
+      };
+
+      socket.addEventListener("message", function(message){
+        console.log(message.data)
+      })
+
+      socket.send("hello server i am big fan of you ha ha");
+    </script>
+  </body>
+</html>

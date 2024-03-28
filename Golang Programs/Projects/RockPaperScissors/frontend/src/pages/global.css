@@ -1,0 +1,317 @@
+
+/* profile page styles */
+
+/* Profile.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+.profile-page {
+    padding: 50px;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-page .card {
+    /* border: 1px solid rgb(4, 57, 203); */
+    /* border-radius: 10px; */
+    padding: 50px;
+    display: flex;
+    gap: 50px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-page button {
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 15px 15px;
+    background-color: blueviolet;
+    color: white;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+
+/* game page */
+
+.gamepage {
+    padding: 50px;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gamepage > h1 {
+    text-align: center;
+}
+
+.gamepage .gamepage-main {
+    border: 1px solid purple;
+    border-radius: 10px;
+    padding: 20px;
+    width: 500px;
+}
+
+.gamepage .gamepage-main .card {
+    /* border: 1px solid grey; */
+    /* border-radius: 10px; */
+    padding: 50px;
+    display: flex;
+    gap: 50px;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.gamepage .create-join-room {
+    width: 100%;
+    display: flex;
+    gap: 5px;
+    flex-direction: row;
+}
+
+.create-join-room > button {
+    flex: 1;
+    width: 100%;
+    background-color: rgb(174, 0, 174);
+    padding: 10px 20px;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    color: white;
+}
+
+.create-join-room > button:hover {
+    background-color: rgb(159, 0, 159);
+   cursor: pointer;
+}
+
+.gamepage .roomIdInput {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.gamepage .roomIdInput div {
+    flex: 1;
+}
+
+.gamepage  label {
+    font-size: 18px;
+    padding: 5px 0px;
+}
+
+.gamepage .roomIdInput input {
+    padding: 10px 20px;
+    font-size: 24px;
+    width: 100%;
+    outline: none;
+}
+
+.gamepage .gamephase{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.gamepage .gamephase .players-info {
+    font-weight: bold;
+    font-size: 28px;
+    display: flex;
+    justify-content: space-between;
+    color: purple;
+}
+
+.gamepage .gamephase .main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.gamepage .gamephase .main .selection {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.gamepage .game-info {
+    text-align: center;
+    color: gray;
+}
+
+.gamepage .gamephase .main .selection div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    flex: 1;
+    border: 1px solid greenyellow;
+    border-radius: 10px;
+    cursor: pointer;
+    /* width: ; */
+}
+
+.gamepage .gamephase .main .selection div:hover {
+    background-color: rgb(208, 255, 255);
+    transition: all 400ms;
+    /* width: ; */
+}
+
+.gamepage .gamephaseresult {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.gamepage .result-table table{
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid green;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.gamepage .result-table table th {
+    padding: 20px 5px;
+    background-color: #45a049;
+    color: white;
+}
+
+.gamepage .result-table table td {
+    padding: 10px 5px;
+    color: rgb(69, 69, 69);
+}
+
+
+
+.gamepage .replaygame {
+    display: flex;
+    gap: 20px;
+    /* justify-content: space-between; */
+    width: 100%;
+}
+
+.gamepage .gamephaseresult .replaygame button {
+    padding: 10px 20px;
+    font-size: 20px;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    background-color: purple;
+    color: white;
+    cursor: pointer;
+    flex: 1;
+}
+
+.gamepage .currentGameResult {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.gamepage .currentGameResult > div {
+    flex: 1;
+    border-radius: 10px;
+    border: 1px solid rgb(19, 66, 141);
+    box-shadow: 1px 1px 1px 1px gray;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.gamepage .currentGameResult > div > div {
+    text-align: center;
+}
+.gamepage .currentGameResult > div > .selection {
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(0, 53, 128);
+}
+
+.gamepage .currentGameResult > div > .title {
+    color: gray;
+}
+
+.gamepage .gameStartsInTimer {
+    width: 100%;
+}
+
+.gamepage .gameStartsInTimer h1 {
+    text-align: center;
+    color: blueviolet;
+}
+
+/* signup page */
+.signuppage {
+    /* display: flex; */
+    /* justify-content: center; */
+    /* flex-direction: column; */
+    /* align-items: center; */
+    padding: 100px 50px;
+    height: 100vh;
+}
+.signup-form {
+    width: 300px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .signup-form div {
+    /* margin-bottom: 10px; */
+  }
+  
+  .signup-form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .signup-form .signnupbtn {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .signup-form input[type="text"],
+  .signup-form input[type="password"] {
+    width: 100%;
+    padding: 14px 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 18px;
+    outline: none;
+    border: 1px solid gray;
+  }
+  
+  .signup-form button{
+    background-color: #4c72af;
+    color: white;
+    padding: 14px 28px;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .signup-form input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  

@@ -1,0 +1,83 @@
+GRPC
+
+motivation for this technology :
+
+Client server communication:
+SOAP, REST, GraphQL
+SSE, WebSockets
+Raw TCP
+
+SOAP - xml data transfer
+REST - you can choose whatever you want. json famous
+Graphql - solved some problems with REST ( TODO )
+
+SSE - server side rendering
+
+what if i want bidirectional communication : websockets, it doesnt have a formate. you can send anything.
+
+SSE - server sends information to client.
+
+most databases created their own protocols on raw tcp. for eg. Redis.
+
+No matter what you choose you have your client and server have to agree. Need client library. Any communication protocol needs client library for the language of choice.
+- soap library
+- http client library 
+
+Having a client library is a big responsibility.
+http/1, http/2, new features, security etc.
+
+Browser is the biggest http client. it does all like doing http method, does tls and all does.
+
+There is when grpc comes in ?
+Client library : one libraary for popular languages
+Protocol : http/2 ( hidden implementation )
+Message Format : protocol buffers as formate
+
+This is the second attempt after soap.
+
+We need client and server that understand protocol buffers, http/2 protocol.
+
+They are hiding http/2 hidden implementation. let's say in future protocol changes to http/3 then still it will start working.
+
+It solves biggest problems with the client libraries.
+
+
+GRPC Modes :
+- unary RPC ( client sends request to server, synchroinously calculate and get response. just like request response )
+- Server streaming RPC ( client sends one request, and client wants multiple responsess from server to the client. for eg. youtube video.)
+- Client streaming RPC ( exactly opposite to server streaming RPC, for eg. uploading the big file )
+- bidirectional streaming RPC ( both sends each other data.)
+
+Coding Time :
+- Todo application using grppc
+- createTodo()
+- readTodos() // server streaming
+- readTodos() // synchroinously
+
+
+we can have multiple service inside our todoPackage;
+
+Pros and cons of grpc protocol :
+
+Pros :
+- fast and compact ( as we are directly using binary, not REST JSON)
+- one client library
+- progress feedback
+- cancel request (h2)
+- h2/protobuf
+
+Cons :
+- schema
+- Thick client
+- Proxies
+- Still young ( support )
+- Error handling
+- no native browser support
+- timeouts ( pub/sub )
+
+grpc is a statefull. you can also cancel the request in grpc as it is statefull.
+
+in http 1.1 it is impossible to cancel the http request. you can ignore the request but at server it is going to execute.
+
+all the benefits of protocol buffers and http2 are given to grpc.
+

@@ -1,0 +1,44 @@
+syntax="proto3";
+
+// file will get created in this link
+// either they will write name of the package.
+// easiest way to do is this.
+option go_package="./proto";
+
+package greetservice;
+
+// rpc's are defined inside service
+service GreetService {
+    rpc SayHello(NoParam) returns (HelloResponse);
+
+    rpc SayHelloServerSideStreaming(NameList) returns (stream HelloResponse);
+
+    rpc SayHelloClientStreaming(stream HelloRequest) returns (MessageList);
+
+    // 4th one is very common and used every where.
+    rpc SayHelloBidirectionalStreaming(stream HelloRequest) returns (stream HelloResponse);
+}
+
+message MessageList {
+    repeated string messages = 1;
+}
+
+message HelloRequest {
+    string name = 1;
+}
+
+message NameList {
+    repeated string name = 1;
+}
+
+message NoParam {};
+
+message HelloResponse {
+    string message = 1;
+}
+
+
+
+// The code you are going to write here will be looking very very similar.
+// communication between client and server rpc will be written here.
+

@@ -1,0 +1,20 @@
+[GIN-debug] GET    /test                     --> main.main.func1 (7 handlers)
+[GIN-debug] GET    /video                    --> main.main.func2 (7 handlers)
+[GIN-debug] POST   /video                    --> main.main.func3 (7 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8080
+127.0.0.1 - [14 Mar 24 11:37 IST] POST /video 400 233.938µs 
+127.0.0.1 - [14 Mar 24 11:37 IST] POST /video 400 265.365µs 
+127.0.0.1 - [14 Mar 24 11:37 IST] POST /video 200 216.32µs 
+127.0.0.1 - [14 Mar 24 11:38 IST] GET /video 200 174µs 
+127.0.0.1 - [14 Mar 24 11:38 IST] GET /video 200 136.315µs 
+127.0.0.1 - [14 Mar 24 11:38 IST] GET /video 200 579.895µs 
+127.0.0.1 - [14 Mar 24 11:38 IST] GET /video 200 142.177µs 
+127.0.0.1 - [14 Mar 24 11:38 IST] GET /video 200 198.884µs 
+127.0.0.1 - [14 Mar 24 11:38 IST] GET /video 200 132.041µs 
+127.0.0.1 - [14 Mar 24 11:38 IST] GET /video 200 146.997µs 
+127.0.0.1 - [14 Mar 24 11:38 IST] GET /video 200 126.58µs 
+127.0.0.1 - [14 Mar 24 11:38 IST] GET /video 200 136.953µs 
+127.0.0.1 - [14 Mar 24 11:38 IST] GET /video 200 155.598µs 
+127.0.0.1 - [14 Mar 24 11:38 IST] GET /video 200 156.151µs 

@@ -1,0 +1,119 @@
+OSI MODEL
+
+7 Layers each describle a specific networking componenet.
+
+Layer 7 Application
+Layer 6 Presentation - Encoding, Serialization ( should be converted to string )
+Layer 5 Session - Connection Establishment, TLS (??)
+Layer 4 Transport UDP/TCP Segments
+Layer 3 Network IP Packets
+Layer 2 Data link- frames MAC address ethernet Frames
+Layer 1 Physical layer - electric signals, fiber or radio waves.
+
+Really we need session layer for whole session. layer 5 app means save a particular connection when connection establishment. Apps on different levels.
+
+We configure our application to be of layer 4 and layer 7.
+
+IP protocol - Network protocol. we don't know ports, we only know ip where we have to go.
+
+what is happening when any data need to go from application layer to reciever application layer.
+
+first go to presentation then to session layer of sender.
+session layer will pause given request and will try to make a session with the reciever by going till it's session layer then it will get ack and then it will resume this process as now both are connected.
+
+HOW session layer actually doing it ?
+
+OSI model has too many layers which can be hard to comprehend.
+Hard to argue about which layer does what.
+Simpler to deal with layers 5 6 7 as application layer.
+
+TCP-IP models.
+
+Just 4 layers.
+- application ( layer 5 6 7 )
+- Transport ( layer 4 )
+- Internet ( layer 3 )
+- Data link ( layer 2)
+- Physical layer is not disccussed in this model.
+
+Internet Protocol (IP) don't care about ports now.
+
+IP Address 
+- layer 3 property
+- can be set automatically or staticallly
+- network and host portion
+- 4 bytes in ipv4 - 32 bits
+
+a.b.c.d/x . x is the network bits and remains are hosts.
+
+ex. 192.168.254.0/24 
+- the first 24 bits are network and rest 8 are for host.
+- This means we can have 2 power 24 networks and each network has 2 power 8 hosts.
+- it is also called as a subnet.
+
+Subnet Mask
+192.168.254.0/24 is also called as a subnet.
+The subnet has a mask 255.255.255.0
+Subnet mask is used to determine wheather ip is in same subnet or not.
+
+Default Gateway.
+- Most networks consistes of hosts and a default gateway.
+- when host A want to talk to B directly if both are in same submet.
+- other wise A sends it to some who might know, gateway.
+- the gateway has an ip address and each host should know its gateway.
+
+you can have 3 things in network
+- gateway
+- subnet mask
+- your ip
+
+else you can not communicate with anyone ha ha.
+
+network portion and host portions. we can configure our router to have more hosts and less hosts.
+
+if your database is in different subnet and if there is trafffic on router then we will get delay. hence it makes sense to put your database in the same subnet as server.
+
+ip PACKET
+
+it has headers and data sections.
+header is 20 bytes ( can go upto 60 bytes if options are enabled ) 
+data section can go upto 65536 bytes. never seen an ip packet that large. also there it mtu. maximum transmission unit.
+you will never reach there ip size in normally.
+
+
+25:00
+we can write packet and write options inside it.
+data portion can go upto 65kb.
+
+Version of ip protocol : 4 bits. 15 numbers. 
+Internet Header Length : how long bytes.
+Total Length: 8 bytes. 65 k bytes.
+Fragmentation stuff. Identification, Flags, Fragmentation
+TTL - time to live
+
+as we don't want our packet to roam around in internet.
+
+Protocol of the data to be sent.  Why do we need extra 8 bit for this. This way routers don't need to parse the whole data, hence they can immediatly know what type of data is it.
+
+Protocol can be : icmp, udp, tcp etc.
+
+Source ip address : 32 bits
+Destination ip address: 32 bits
+
+For always time if router if busy with work then it wil drop the packet. Then client will see that timed out hence let me do something. 
+
+We need to send explicit congestion control message to user as client will wait too much if message not given.
+
+love this stuff as without dropping packet we are doing congestion control in this case.
+
+Today engineers does not have limit. we have too much RAM ha ha!! today's engineers.
+
+ICMP
+- Internet control message protocol lives in layer 3
+- designed for informational messages - host unreachable, port unreachable, fragmentation needed, packet expired.
+- Uses IP directly
+- doesn't require listeners or ports to be opened.
+- PING and traceroute use it.
+
+
+

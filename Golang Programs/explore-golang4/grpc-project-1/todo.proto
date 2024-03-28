@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package="proto/todo"; // where will the out file will be built
+
+service Todo {
+    rpc createTodo(CreateTodoRequest) returns (TodoItem);
+    rpc getTodos(noparams) returns (TodoItems);
+}
+
+message CreateTodoRequest {
+    string text = 1;  // Text content of the todo item
+}
+
+message TodoItem {
+    int32 id = 1;
+    string title = 2;
+    bool completed = 3;
+}
+
+// give all todo items as an array of items
+message TodoItems {
+    repeated TodoItem todoItems = 1;
+}
+
+message noparams {}
