@@ -1,0 +1,42 @@
+# Shema for job board
+
+# schema is the heart of the project
+# URL can also be generated at run time by server.
+type JobListing {
+    _id: ID!,
+    title: String!
+    description: String!
+    company: String!
+    url: String 
+}
+
+# we can query jobs and also a single job query.
+type Query {
+    jobs: [JobListing!]!
+    job(id: ID!): JobListing!
+}
+
+# along with queries we have mutations that's where we do create update and delete functionalities
+type Mutation {
+    createJobListing(input: CreateJobListingInput): JobListing!
+    updateJobListing(id: ID!,input: UpdateJobListingInput): JobListing!
+    deleteJobListing(id: ID!): DeleteJobResponse!
+}
+
+# other than id all things
+input CreateJobListingInput {
+    title: String!
+    description: String!
+    company: String!
+    url: String!
+}
+
+input UpdateJobListingInput {
+    title: String
+    description: String
+    url: String
+}
+
+type DeleteJobResponse {
+    deletedJobId: String!
+}
