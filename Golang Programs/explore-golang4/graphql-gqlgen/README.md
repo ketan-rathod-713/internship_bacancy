@@ -1,31 +1,26 @@
 
-# Initial Project Structure
+# Graphql
 
+
+## Setting Up Project
+
+```
 go get github.com/99designs/gqlgen@latest
 
 printf '// +build tools\npackage tools\nimport _ "github.com/99
 designs/gqlgen"' | gofmt > tools.go
 
-gqlgen ( graphql generation) with the help of this we haven't need to do all the hard work by ourself.
-
-Now run init command
-
 go run github.com/99designs/gqlgen init
+```
 
-Lots of things happen when we run this command. 
+- Remove all uneccessary code and start writting your own schema and then once again generate code for the same. and ig there should be versioning scheme such that no changes should be broken and also it should be backward compatible.
+- NOTE : do not generate once again as i have modified joblisting struct with bson field tag for ID. If possible maintain version.
 
-generated.go // also remove all 
+## Running Project
 
-server.go file is created
-complete graph folder is created.
-
-models_gen.go // we will change it.
-
-resolvers.go
-schema.graphqls // we wil change our schema from here
-schema.resolvers.go
-
-Now start from writting schema of your own choice.
+```
+go run server.go
+```
 
 ## Example Grapql Mutations & Queries
 
@@ -50,7 +45,6 @@ mutation exampleMutationUpdate($id: ID!,$data:UpdateJobListingInput) {
     url
   }
 }
-
 
 mutation exampleDelete($id: ID!) {
   deleteJobListing(id: $id){
@@ -77,5 +71,3 @@ query exampleJobs($id:ID!) {
   }
 }
 ```
-
-NOTE : do not generate once again as i have modified joblisting struct with bson field tag for ID.

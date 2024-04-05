@@ -3,17 +3,52 @@
 # schema is the heart of the project
 # URL can also be generated at run time by server.
 type JobListing {
-    _id: ID!,
+    _id: ID!
     title: String!
     description: String!
     company: String!
-    url: String 
+    url: String
+    jobProfile: JobProfile!
+    technology: Technology! 
+}
+
+type Technology {
+    _id: ID!
+    name: String!
+}
+
+input JobProfileInput {
+    title: String!,
+    description: String!,
+    min_salary: Int,
+    max_salary: Int,
+    requirements: Int,
+    joinBy: String!,
+    strictProfilePolicy: Boolean!
+}
+
+# either give technology id or it's name
+input TechnologyInput {
+    _id: ID
+    name: String
+}
+
+type JobProfile {
+    _id: ID!,
+    title: String!,
+    description: String!,
+    min_salary: Int,
+    max_salary: Int,
+    requirements: Int,
+    joinBy: String!,
+    strictProfilePolicy: Boolean!
 }
 
 # we can query jobs and also a single job query.
 type Query {
     jobs: [JobListing!]!
-    job(id: ID!): JobListing!
+    job(id: ID!): JobListing!,
+    jobProfile(id: ID!): JobProfile!
 }
 
 # along with queries we have mutations that's where we do create update and delete functionalities
@@ -29,12 +64,15 @@ input CreateJobListingInput {
     description: String!
     company: String!
     url: String!
+    jobProfile: JobProfileInput!
+    technology: TechnologyInput!
 }
 
 input UpdateJobListingInput {
     title: String
     description: String
     url: String
+    jobProfile: JobProfileInput
 }
 
 type DeleteJobResponse {

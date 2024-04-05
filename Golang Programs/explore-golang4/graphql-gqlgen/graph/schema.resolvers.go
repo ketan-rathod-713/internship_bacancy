@@ -35,6 +35,11 @@ func (r *queryResolver) Job(ctx context.Context, id string) (*model.JobListing, 
 	return r.Api.Job(id)
 }
 
+// JobProfile is the resolver for the jobProfile field.
+func (r *queryResolver) JobProfile(ctx context.Context, id string) (*model.JobProfile, error) {
+	return r.Api.JobProfile(id)
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

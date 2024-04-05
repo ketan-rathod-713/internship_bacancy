@@ -3,10 +3,12 @@
 package model
 
 type CreateJobListingInput struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Company     string `json:"company"`
-	URL         string `json:"url"`
+	Title       string           `json:"title"`
+	Description string           `json:"description"`
+	Company     string           `json:"company"`
+	URL         string           `json:"url"`
+	JobProfile  *JobProfileInput `json:"jobProfile"`
+	Technology  *TechnologyInput `json:"technology"`
 }
 
 type DeleteJobResponse struct {
@@ -14,11 +16,34 @@ type DeleteJobResponse struct {
 }
 
 type JobListing struct {
-	ID          string  `json:"_id" bson:"_id"`
-	Title       string  `json:"title"`
-	Description string  `json:"description"`
-	Company     string  `json:"company"`
-	URL         *string `json:"url,omitempty"`
+	ID          string      `json:"_id"`
+	Title       string      `json:"title"`
+	Description string      `json:"description"`
+	Company     string      `json:"company"`
+	URL         *string     `json:"url,omitempty"`
+	JobProfile  *JobProfile `json:"jobProfile"`
+	Technology  *Technology `json:"technology"`
+}
+
+type JobProfile struct {
+	ID                  string `json:"_id"`
+	Title               string `json:"title"`
+	Description         string `json:"description"`
+	MinSalary           *int   `json:"min_salary,omitempty"`
+	MaxSalary           *int   `json:"max_salary,omitempty"`
+	Requirements        *int   `json:"requirements,omitempty"`
+	JoinBy              string `json:"joinBy"`
+	StrictProfilePolicy bool   `json:"strictProfilePolicy"`
+}
+
+type JobProfileInput struct {
+	Title               string `json:"title"`
+	Description         string `json:"description"`
+	MinSalary           *int   `json:"min_salary,omitempty"`
+	MaxSalary           *int   `json:"max_salary,omitempty"`
+	Requirements        *int   `json:"requirements,omitempty"`
+	JoinBy              string `json:"joinBy"`
+	StrictProfilePolicy bool   `json:"strictProfilePolicy"`
 }
 
 type Mutation struct {
@@ -27,8 +52,19 @@ type Mutation struct {
 type Query struct {
 }
 
+type Technology struct {
+	ID   string `json:"_id"`
+	Name string `json:"name"`
+}
+
+type TechnologyInput struct {
+	ID   *string `json:"_id,omitempty"`
+	Name *string `json:"name,omitempty"`
+}
+
 type UpdateJobListingInput struct {
-	Title       *string `json:"title,omitempty"`
-	Description *string `json:"description,omitempty"`
-	URL         *string `json:"url,omitempty"`
+	Title       *string          `json:"title,omitempty"`
+	Description *string          `json:"description,omitempty"`
+	URL         *string          `json:"url,omitempty"`
+	JobProfile  *JobProfileInput `json:"jobProfile,omitempty"`
 }

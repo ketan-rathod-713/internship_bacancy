@@ -54,8 +54,21 @@ type ComplexityRoot struct {
 		Company     func(childComplexity int) int
 		Description func(childComplexity int) int
 		ID          func(childComplexity int) int
+		JobProfile  func(childComplexity int) int
+		Technology  func(childComplexity int) int
 		Title       func(childComplexity int) int
 		URL         func(childComplexity int) int
+	}
+
+	JobProfile struct {
+		Description         func(childComplexity int) int
+		ID                  func(childComplexity int) int
+		JoinBy              func(childComplexity int) int
+		MaxSalary           func(childComplexity int) int
+		MinSalary           func(childComplexity int) int
+		Requirements        func(childComplexity int) int
+		StrictProfilePolicy func(childComplexity int) int
+		Title               func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -65,8 +78,14 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Job  func(childComplexity int, id string) int
-		Jobs func(childComplexity int) int
+		Job        func(childComplexity int, id string) int
+		JobProfile func(childComplexity int, id string) int
+		Jobs       func(childComplexity int) int
+	}
+
+	Technology struct {
+		ID   func(childComplexity int) int
+		Name func(childComplexity int) int
 	}
 }
 
@@ -78,6 +97,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Jobs(ctx context.Context) ([]*model.JobListing, error)
 	Job(ctx context.Context, id string) (*model.JobListing, error)
+	JobProfile(ctx context.Context, id string) (*model.JobProfile, error)
 }
 
 type executableSchema struct {
@@ -127,6 +147,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.JobListing.ID(childComplexity), true
 
+	case "JobListing.jobProfile":
+		if e.complexity.JobListing.JobProfile == nil {
+			break
+		}
+
+		return e.complexity.JobListing.JobProfile(childComplexity), true
+
+	case "JobListing.technology":
+		if e.complexity.JobListing.Technology == nil {
+			break
+		}
+
+		return e.complexity.JobListing.Technology(childComplexity), true
+
 	case "JobListing.title":
 		if e.complexity.JobListing.Title == nil {
 			break
@@ -140,6 +174,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.JobListing.URL(childComplexity), true
+
+	case "JobProfile.description":
+		if e.complexity.JobProfile.Description == nil {
+			break
+		}
+
+		return e.complexity.JobProfile.Description(childComplexity), true
+
+	case "JobProfile._id":
+		if e.complexity.JobProfile.ID == nil {
+			break
+		}
+
+		return e.complexity.JobProfile.ID(childComplexity), true
+
+	case "JobProfile.joinBy":
+		if e.complexity.JobProfile.JoinBy == nil {
+			break
+		}
+
+		return e.complexity.JobProfile.JoinBy(childComplexity), true
+
+	case "JobProfile.max_salary":
+		if e.complexity.JobProfile.MaxSalary == nil {
+			break
+		}
+
+		return e.complexity.JobProfile.MaxSalary(childComplexity), true
+
+	case "JobProfile.min_salary":
+		if e.complexity.JobProfile.MinSalary == nil {
+			break
+		}
+
+		return e.complexity.JobProfile.MinSalary(childComplexity), true
+
+	case "JobProfile.requirements":
+		if e.complexity.JobProfile.Requirements == nil {
+			break
+		}
+
+		return e.complexity.JobProfile.Requirements(childComplexity), true
+
+	case "JobProfile.strictProfilePolicy":
+		if e.complexity.JobProfile.StrictProfilePolicy == nil {
+			break
+		}
+
+		return e.complexity.JobProfile.StrictProfilePolicy(childComplexity), true
+
+	case "JobProfile.title":
+		if e.complexity.JobProfile.Title == nil {
+			break
+		}
+
+		return e.complexity.JobProfile.Title(childComplexity), true
 
 	case "Mutation.createJobListing":
 		if e.complexity.Mutation.CreateJobListing == nil {
@@ -189,12 +279,38 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Job(childComplexity, args["id"].(string)), true
 
+	case "Query.jobProfile":
+		if e.complexity.Query.JobProfile == nil {
+			break
+		}
+
+		args, err := ec.field_Query_jobProfile_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.JobProfile(childComplexity, args["id"].(string)), true
+
 	case "Query.jobs":
 		if e.complexity.Query.Jobs == nil {
 			break
 		}
 
 		return e.complexity.Query.Jobs(childComplexity), true
+
+	case "Technology._id":
+		if e.complexity.Technology.ID == nil {
+			break
+		}
+
+		return e.complexity.Technology.ID(childComplexity), true
+
+	case "Technology.name":
+		if e.complexity.Technology.Name == nil {
+			break
+		}
+
+		return e.complexity.Technology.Name(childComplexity), true
 
 	}
 	return 0, false
@@ -205,6 +321,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputCreateJobListingInput,
+		ec.unmarshalInputJobProfileInput,
+		ec.unmarshalInputTechnologyInput,
 		ec.unmarshalInputUpdateJobListingInput,
 	)
 	first := true
@@ -308,17 +426,52 @@ var sources = []*ast.Source{
 # schema is the heart of the project
 # URL can also be generated at run time by server.
 type JobListing {
-    _id: ID!,
+    _id: ID!
     title: String!
     description: String!
     company: String!
-    url: String 
+    url: String
+    jobProfile: JobProfile!
+    technology: Technology! 
+}
+
+type Technology {
+    _id: ID!
+    name: String!
+}
+
+input JobProfileInput {
+    title: String!,
+    description: String!,
+    min_salary: Int,
+    max_salary: Int,
+    requirements: Int,
+    joinBy: String!,
+    strictProfilePolicy: Boolean!
+}
+
+# either give technology id or it's name
+input TechnologyInput {
+    _id: ID
+    name: String
+}
+
+type JobProfile {
+    _id: ID!,
+    title: String!,
+    description: String!,
+    min_salary: Int,
+    max_salary: Int,
+    requirements: Int,
+    joinBy: String!,
+    strictProfilePolicy: Boolean!
 }
 
 # we can query jobs and also a single job query.
 type Query {
     jobs: [JobListing!]!
-    job(id: ID!): JobListing!
+    job(id: ID!): JobListing!,
+    jobProfile(id: ID!): JobProfile!
 }
 
 # along with queries we have mutations that's where we do create update and delete functionalities
@@ -334,12 +487,15 @@ input CreateJobListingInput {
     description: String!
     company: String!
     url: String!
+    jobProfile: JobProfileInput!
+    technology: TechnologyInput!
 }
 
 input UpdateJobListingInput {
     title: String
     description: String
     url: String
+    jobProfile: JobProfileInput
 }
 
 type DeleteJobResponse {
@@ -418,6 +574,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_jobProfile_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -735,6 +906,461 @@ func (ec *executionContext) fieldContext_JobListing_url(ctx context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _JobListing_jobProfile(ctx context.Context, field graphql.CollectedField, obj *model.JobListing) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_JobListing_jobProfile(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.JobProfile, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.JobProfile)
+	fc.Result = res
+	return ec.marshalNJobProfile2ᚖgraphqlᚋgraphᚋmodelᚐJobProfile(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_JobListing_jobProfile(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "JobListing",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_JobProfile__id(ctx, field)
+			case "title":
+				return ec.fieldContext_JobProfile_title(ctx, field)
+			case "description":
+				return ec.fieldContext_JobProfile_description(ctx, field)
+			case "min_salary":
+				return ec.fieldContext_JobProfile_min_salary(ctx, field)
+			case "max_salary":
+				return ec.fieldContext_JobProfile_max_salary(ctx, field)
+			case "requirements":
+				return ec.fieldContext_JobProfile_requirements(ctx, field)
+			case "joinBy":
+				return ec.fieldContext_JobProfile_joinBy(ctx, field)
+			case "strictProfilePolicy":
+				return ec.fieldContext_JobProfile_strictProfilePolicy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type JobProfile", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _JobListing_technology(ctx context.Context, field graphql.CollectedField, obj *model.JobListing) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_JobListing_technology(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Technology, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Technology)
+	fc.Result = res
+	return ec.marshalNTechnology2ᚖgraphqlᚋgraphᚋmodelᚐTechnology(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_JobListing_technology(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "JobListing",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_Technology__id(ctx, field)
+			case "name":
+				return ec.fieldContext_Technology_name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Technology", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _JobProfile__id(ctx context.Context, field graphql.CollectedField, obj *model.JobProfile) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_JobProfile__id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_JobProfile__id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "JobProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _JobProfile_title(ctx context.Context, field graphql.CollectedField, obj *model.JobProfile) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_JobProfile_title(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Title, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_JobProfile_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "JobProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _JobProfile_description(ctx context.Context, field graphql.CollectedField, obj *model.JobProfile) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_JobProfile_description(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Description, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_JobProfile_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "JobProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _JobProfile_min_salary(ctx context.Context, field graphql.CollectedField, obj *model.JobProfile) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_JobProfile_min_salary(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MinSalary, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_JobProfile_min_salary(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "JobProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _JobProfile_max_salary(ctx context.Context, field graphql.CollectedField, obj *model.JobProfile) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_JobProfile_max_salary(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MaxSalary, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_JobProfile_max_salary(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "JobProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _JobProfile_requirements(ctx context.Context, field graphql.CollectedField, obj *model.JobProfile) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_JobProfile_requirements(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Requirements, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_JobProfile_requirements(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "JobProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _JobProfile_joinBy(ctx context.Context, field graphql.CollectedField, obj *model.JobProfile) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_JobProfile_joinBy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.JoinBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_JobProfile_joinBy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "JobProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _JobProfile_strictProfilePolicy(ctx context.Context, field graphql.CollectedField, obj *model.JobProfile) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_JobProfile_strictProfilePolicy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StrictProfilePolicy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_JobProfile_strictProfilePolicy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "JobProfile",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_createJobListing(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createJobListing(ctx, field)
 	if err != nil {
@@ -784,6 +1410,10 @@ func (ec *executionContext) fieldContext_Mutation_createJobListing(ctx context.C
 				return ec.fieldContext_JobListing_company(ctx, field)
 			case "url":
 				return ec.fieldContext_JobListing_url(ctx, field)
+			case "jobProfile":
+				return ec.fieldContext_JobListing_jobProfile(ctx, field)
+			case "technology":
+				return ec.fieldContext_JobListing_technology(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type JobListing", field.Name)
 		},
@@ -851,6 +1481,10 @@ func (ec *executionContext) fieldContext_Mutation_updateJobListing(ctx context.C
 				return ec.fieldContext_JobListing_company(ctx, field)
 			case "url":
 				return ec.fieldContext_JobListing_url(ctx, field)
+			case "jobProfile":
+				return ec.fieldContext_JobListing_jobProfile(ctx, field)
+			case "technology":
+				return ec.fieldContext_JobListing_technology(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type JobListing", field.Name)
 		},
@@ -977,6 +1611,10 @@ func (ec *executionContext) fieldContext_Query_jobs(ctx context.Context, field g
 				return ec.fieldContext_JobListing_company(ctx, field)
 			case "url":
 				return ec.fieldContext_JobListing_url(ctx, field)
+			case "jobProfile":
+				return ec.fieldContext_JobListing_jobProfile(ctx, field)
+			case "technology":
+				return ec.fieldContext_JobListing_technology(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type JobListing", field.Name)
 		},
@@ -1033,6 +1671,10 @@ func (ec *executionContext) fieldContext_Query_job(ctx context.Context, field gr
 				return ec.fieldContext_JobListing_company(ctx, field)
 			case "url":
 				return ec.fieldContext_JobListing_url(ctx, field)
+			case "jobProfile":
+				return ec.fieldContext_JobListing_jobProfile(ctx, field)
+			case "technology":
+				return ec.fieldContext_JobListing_technology(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type JobListing", field.Name)
 		},
@@ -1045,6 +1687,79 @@ func (ec *executionContext) fieldContext_Query_job(ctx context.Context, field gr
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_job_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_jobProfile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_jobProfile(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().JobProfile(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.JobProfile)
+	fc.Result = res
+	return ec.marshalNJobProfile2ᚖgraphqlᚋgraphᚋmodelᚐJobProfile(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_jobProfile(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_JobProfile__id(ctx, field)
+			case "title":
+				return ec.fieldContext_JobProfile_title(ctx, field)
+			case "description":
+				return ec.fieldContext_JobProfile_description(ctx, field)
+			case "min_salary":
+				return ec.fieldContext_JobProfile_min_salary(ctx, field)
+			case "max_salary":
+				return ec.fieldContext_JobProfile_max_salary(ctx, field)
+			case "requirements":
+				return ec.fieldContext_JobProfile_requirements(ctx, field)
+			case "joinBy":
+				return ec.fieldContext_JobProfile_joinBy(ctx, field)
+			case "strictProfilePolicy":
+				return ec.fieldContext_JobProfile_strictProfilePolicy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type JobProfile", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_jobProfile_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -1175,6 +1890,94 @@ func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, fie
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Technology__id(ctx context.Context, field graphql.CollectedField, obj *model.Technology) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Technology__id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Technology__id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Technology",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Technology_name(ctx context.Context, field graphql.CollectedField, obj *model.Technology) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Technology_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Technology_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Technology",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2960,7 +3763,7 @@ func (ec *executionContext) unmarshalInputCreateJobListingInput(ctx context.Cont
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "description", "company", "url"}
+	fieldsInOrder := [...]string{"title", "description", "company", "url", "jobProfile", "technology"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -2995,6 +3798,123 @@ func (ec *executionContext) unmarshalInputCreateJobListingInput(ctx context.Cont
 				return it, err
 			}
 			it.URL = data
+		case "jobProfile":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("jobProfile"))
+			data, err := ec.unmarshalNJobProfileInput2ᚖgraphqlᚋgraphᚋmodelᚐJobProfileInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.JobProfile = data
+		case "technology":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("technology"))
+			data, err := ec.unmarshalNTechnologyInput2ᚖgraphqlᚋgraphᚋmodelᚐTechnologyInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Technology = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputJobProfileInput(ctx context.Context, obj interface{}) (model.JobProfileInput, error) {
+	var it model.JobProfileInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"title", "description", "min_salary", "max_salary", "requirements", "joinBy", "strictProfilePolicy"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "title":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Title = data
+		case "description":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Description = data
+		case "min_salary":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("min_salary"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MinSalary = data
+		case "max_salary":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("max_salary"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MaxSalary = data
+		case "requirements":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requirements"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Requirements = data
+		case "joinBy":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("joinBy"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.JoinBy = data
+		case "strictProfilePolicy":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("strictProfilePolicy"))
+			data, err := ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StrictProfilePolicy = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputTechnologyInput(ctx context.Context, obj interface{}) (model.TechnologyInput, error) {
+	var it model.TechnologyInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"_id", "name"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "_id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "name":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Name = data
 		}
 	}
 
@@ -3008,7 +3928,7 @@ func (ec *executionContext) unmarshalInputUpdateJobListingInput(ctx context.Cont
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "description", "url"}
+	fieldsInOrder := [...]string{"title", "description", "url", "jobProfile"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -3036,6 +3956,13 @@ func (ec *executionContext) unmarshalInputUpdateJobListingInput(ctx context.Cont
 				return it, err
 			}
 			it.URL = data
+		case "jobProfile":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("jobProfile"))
+			data, err := ec.unmarshalOJobProfileInput2ᚖgraphqlᚋgraphᚋmodelᚐJobProfileInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.JobProfile = data
 		}
 	}
 
@@ -3122,6 +4049,81 @@ func (ec *executionContext) _JobListing(ctx context.Context, sel ast.SelectionSe
 			}
 		case "url":
 			out.Values[i] = ec._JobListing_url(ctx, field, obj)
+		case "jobProfile":
+			out.Values[i] = ec._JobListing_jobProfile(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "technology":
+			out.Values[i] = ec._JobListing_technology(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var jobProfileImplementors = []string{"JobProfile"}
+
+func (ec *executionContext) _JobProfile(ctx context.Context, sel ast.SelectionSet, obj *model.JobProfile) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, jobProfileImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("JobProfile")
+		case "_id":
+			out.Values[i] = ec._JobProfile__id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "title":
+			out.Values[i] = ec._JobProfile_title(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "description":
+			out.Values[i] = ec._JobProfile_description(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "min_salary":
+			out.Values[i] = ec._JobProfile_min_salary(ctx, field, obj)
+		case "max_salary":
+			out.Values[i] = ec._JobProfile_max_salary(ctx, field, obj)
+		case "requirements":
+			out.Values[i] = ec._JobProfile_requirements(ctx, field, obj)
+		case "joinBy":
+			out.Values[i] = ec._JobProfile_joinBy(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "strictProfilePolicy":
+			out.Values[i] = ec._JobProfile_strictProfilePolicy(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3271,6 +4273,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "jobProfile":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_jobProfile(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -3279,6 +4303,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___schema(ctx, field)
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var technologyImplementors = []string{"Technology"}
+
+func (ec *executionContext) _Technology(ctx context.Context, sel ast.SelectionSet, obj *model.Technology) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, technologyImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Technology")
+		case "_id":
+			out.Values[i] = ec._Technology__id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "name":
+			out.Values[i] = ec._Technology_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3730,6 +4798,25 @@ func (ec *executionContext) marshalNJobListing2ᚖgraphqlᚋgraphᚋmodelᚐJobL
 	return ec._JobListing(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNJobProfile2graphqlᚋgraphᚋmodelᚐJobProfile(ctx context.Context, sel ast.SelectionSet, v model.JobProfile) graphql.Marshaler {
+	return ec._JobProfile(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNJobProfile2ᚖgraphqlᚋgraphᚋmodelᚐJobProfile(ctx context.Context, sel ast.SelectionSet, v *model.JobProfile) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._JobProfile(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNJobProfileInput2ᚖgraphqlᚋgraphᚋmodelᚐJobProfileInput(ctx context.Context, v interface{}) (*model.JobProfileInput, error) {
+	res, err := ec.unmarshalInputJobProfileInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3743,6 +4830,21 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNTechnology2ᚖgraphqlᚋgraphᚋmodelᚐTechnology(ctx context.Context, sel ast.SelectionSet, v *model.Technology) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Technology(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNTechnologyInput2ᚖgraphqlᚋgraphᚋmodelᚐTechnologyInput(ctx context.Context, v interface{}) (*model.TechnologyInput, error) {
+	res, err := ec.unmarshalInputTechnologyInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -4029,6 +5131,46 @@ func (ec *executionContext) unmarshalOCreateJobListingInput2ᚖgraphqlᚋgraph�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputCreateJobListingInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalID(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalID(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalInt(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOJobProfileInput2ᚖgraphqlᚋgraphᚋmodelᚐJobProfileInput(ctx context.Context, v interface{}) (*model.JobProfileInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputJobProfileInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

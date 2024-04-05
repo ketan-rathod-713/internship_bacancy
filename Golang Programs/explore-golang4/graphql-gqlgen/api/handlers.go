@@ -47,8 +47,58 @@ func (a *Api) Job(id string) (*model.JobListing, error) {
 	return &jobListing, nil
 }
 
+func (a *Api) JobProfile(id string) (*model.JobProfile, error) {
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	result := a.DB.Collection("jobprofile").FindOne(context.TODO(), bson.M{"_id": objectId})
+
+	var jobProfile model.JobProfile
+	err = result.Decode(&jobProfile)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &jobProfile, nil
+}
+
 // Mutations
 func (a *Api) CreateJobListing(input *model.CreateJobListingInput) (*model.JobListing, error) {
+
+	technology := input.Technology
+
+	// fmt.Println(*input.Technology.Name)
+
+	if technology == nil {
+		return nil, errors.New("Technology not provided.")
+	}
+
+	var techId string
+	if technology.ID != nil {
+		techId = *technology.ID
+	} else if technology.Name != nil {
+
+		// upload technology to technology collection and return id
+		var tech = bson.M{
+			"name": *technology.Name,
+		}
+		result, err := a.DB.Collection("technology").InsertOne(context.TODO(), tech)
+
+		if err != nil {
+			return nil, err
+		}
+
+		techId = result.InsertedID.(primitive.ObjectID).Hex()
+		input.Technology.ID = &techId
+
+	} else {
+		// if both are null then return error
+		return nil, errors.New("error getting technology name or id")
+	}
 
 	// create document of job
 	result, err := a.DB.Collection("joblisting").InsertOne(context.TODO(), input)
@@ -74,6 +124,20 @@ func (a *Api) CreateJobListing(input *model.CreateJobListingInput) (*model.JobLi
 		Description: input.Description,
 		Company:     input.Company,
 		URL:         &url,
+		JobProfile: &model.JobProfile{
+			ID:                  objectId,
+			Title:               input.JobProfile.Title,
+			Description:         input.JobProfile.Description,
+			MinSalary:           input.JobProfile.MinSalary,
+			MaxSalary:           input.JobProfile.MaxSalary,
+			Requirements:        input.JobProfile.Requirements,
+			JoinBy:              input.JobProfile.JoinBy,
+			StrictProfilePolicy: input.JobProfile.StrictProfilePolicy,
+		},
+		Technology: &model.Technology{
+			ID:   *input.Technology.ID,
+			Name: *input.Technology.Name,
+		},
 	}
 
 	return &jobListing, nil
