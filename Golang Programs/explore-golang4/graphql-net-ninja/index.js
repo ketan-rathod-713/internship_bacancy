@@ -12,14 +12,17 @@ const resolvers = {
         games(){
             return db.games
         },
+        game(_, args){
+            return db.games.find((game)=>{
+                if(game.id == args.id){
+                    return true
+                }
+            })
+        },
         reviews(){
             return db.reviews
         },
-        authors(){
-            return db.authors
-        },
-
-        // we automatically get 3 arguments for such resolver functions
+         // we automatically get 3 arguments for such resolver functions
         // (parent, args, context)
         review(_,args){
             return db.reviews.find((review)=>{
@@ -27,8 +30,31 @@ const resolvers = {
                     return true
                 }
             })
+        },
+        authors(){
+            return db.authors
+        },
+        author(_,args){
+            return db.authors.find((author)=>{
+                if(author.id == args.id){
+                    return true
+                }
+            })
         }
-
+    },
+    // How do we know which game we are reffering for this nested query
+    // parent argument is the reference to the value returned by the parent resolver.
+    // in our case parent will be a Game Object.
+    Game: {
+        reviews(parent) {
+            return db.reviews.filter((review)=> {
+                if(review.game_id === parent.id){
+                    return true
+                } else {
+                    return false
+                }
+            })
+        }
     }
 }
 

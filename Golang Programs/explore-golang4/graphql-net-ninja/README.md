@@ -70,3 +70,52 @@ query ReviewQuery($id:ID!){
 Here we can pass all the variables at start that we want in our application and then call that particular method as it is as shown.
 
 Now similarly define entry points for author and the game.
+
+### Related Data In graphql
+
+Every review has associated game and author.
+Currently we haven't specified that relationship in our schema.
+
+Now lets define this relationship inside our type definitions.
+
+I can write a nested query from client likke this.
+
+```
+query GameQuery($id: ID!){
+    game(id: $id){
+        title,
+        reviews {
+            rating,
+            content
+        }
+    }
+}
+```
+
+But at the moment Appollo doesn't know how to handle this nested query thing. hence we have to specify it in resolver function.
+
+Hence we arise a need for the resolver function for the nested types. But we can not put that in the Query because we don't want our nested resolvers to be entry point for the users.
+
+So instead we create Game object inside resolvers and write a resolvers functions inside it.
+
+```
+  // How do we know which game we are reffering for this nested query
+    // parent argument is the reference to the value returned by the parent resolver.
+    // in our case parent will be a Game Object.
+    Game: {
+        reviews(parent) {
+            return db.reviews.filter((review)=> {
+                if(review.game_id === parent.id){
+                    return true
+                } else {
+                    return false
+                }
+            })
+        }
+    }
+```
+
+# Cost of graphql and node js
+
+They come with certain scaling and performance tradeoffs.
+
