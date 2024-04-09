@@ -1,0 +1,26 @@
+ICMP
+
+some firewalls block icmp for security reasons.
+That is why ping might not work in those cases
+disabling icmp also can cause real damage with connection establishment
+- fragmentation needed
+PING demo
+
+ping is nothing but just icmp message comes.
+
+How ping works ?
+
+it sends icmp echo request from this to destination router.
+
+destination if know icmp protocol then it will send the reply.
+
+if in between entire route if ttl becomes 0 then that router will send an icmp message of unreachable stuff ig.
+
+
+Traceroute
+can you identify the entire path your ip packet takes ?
+clever use of ttl
+increment ttl slowly and you will get router ip address for each hop
+doesnt always work as path changes and icmp might be blocked.
+
+traceroute is not 100% correct always.
