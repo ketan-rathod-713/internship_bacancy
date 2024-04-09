@@ -5,6 +5,10 @@ option go_package="proto/todo"; // where will the out file will be built
 service Todo {
     rpc createTodo(CreateTodoRequest) returns (TodoItem);
     rpc getTodos(noparams) returns (TodoItems);
+    rpc trialTodo(noparams) returns (TodoItem);
+    rpc getTodosStream(noparams) returns (stream TodoItem);
+    rpc getFileDownload(noparams) returns (stream TypeFileDownload);
+    // rpc uploadFile(stream TypeFileUploadRequest) returns (noparams);
 }
 
 message CreateTodoRequest {
@@ -15,6 +19,7 @@ message TodoItem {
     int32 id = 1;
     string title = 2;
     bool completed = 3;
+    bool trialTodo = 4;
 }
 
 // give all todo items as an array of items
@@ -23,3 +28,14 @@ message TodoItems {
 }
 
 message noparams {}
+
+message TypeFileUploadRequest {
+    string folderName = 1;
+    string filename = 2;
+    bytes chunk = 3;
+}
+
+message TypeFileDownload {
+    string filename = 1;
+    bytes chunk = 2;
+}

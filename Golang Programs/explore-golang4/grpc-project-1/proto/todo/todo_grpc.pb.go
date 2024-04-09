@@ -24,6 +24,9 @@ const _ = grpc.SupportPackageIsVersion7
 type TodoClient interface {
 	CreateTodo(ctx context.Context, in *CreateTodoRequest, opts ...grpc.CallOption) (*TodoItem, error)
 	GetTodos(ctx context.Context, in *Noparams, opts ...grpc.CallOption) (*TodoItems, error)
+	TrialTodo(ctx context.Context, in *Noparams, opts ...grpc.CallOption) (*TodoItem, error)
+	GetTodosStream(ctx context.Context, in *Noparams, opts ...grpc.CallOption) (Todo_GetTodosStreamClient, error)
+	GetFileDownload(ctx context.Context, in *Noparams, opts ...grpc.CallOption) (Todo_GetFileDownloadClient, error)
 }
 
 type todoClient struct {
@@ -52,12 +55,88 @@ func (c *todoClient) GetTodos(ctx context.Context, in *Noparams, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *todoClient) TrialTodo(ctx context.Context, in *Noparams, opts ...grpc.CallOption) (*TodoItem, error) {
+	out := new(TodoItem)
+	err := c.cc.Invoke(ctx, "/Todo/trialTodo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *todoClient) GetTodosStream(ctx context.Context, in *Noparams, opts ...grpc.CallOption) (Todo_GetTodosStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Todo_ServiceDesc.Streams[0], "/Todo/getTodosStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &todoGetTodosStreamClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Todo_GetTodosStreamClient interface {
+	Recv() (*TodoItem, error)
+	grpc.ClientStream
+}
+
+type todoGetTodosStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *todoGetTodosStreamClient) Recv() (*TodoItem, error) {
+	m := new(TodoItem)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *todoClient) GetFileDownload(ctx context.Context, in *Noparams, opts ...grpc.CallOption) (Todo_GetFileDownloadClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Todo_ServiceDesc.Streams[1], "/Todo/getFileDownload", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &todoGetFileDownloadClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Todo_GetFileDownloadClient interface {
+	Recv() (*TypeFileDownload, error)
+	grpc.ClientStream
+}
+
+type todoGetFileDownloadClient struct {
+	grpc.ClientStream
+}
+
+func (x *todoGetFileDownloadClient) Recv() (*TypeFileDownload, error) {
+	m := new(TypeFileDownload)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // TodoServer is the server API for Todo service.
 // All implementations must embed UnimplementedTodoServer
 // for forward compatibility
 type TodoServer interface {
 	CreateTodo(context.Context, *CreateTodoRequest) (*TodoItem, error)
 	GetTodos(context.Context, *Noparams) (*TodoItems, error)
+	TrialTodo(context.Context, *Noparams) (*TodoItem, error)
+	GetTodosStream(*Noparams, Todo_GetTodosStreamServer) error
+	GetFileDownload(*Noparams, Todo_GetFileDownloadServer) error
 	mustEmbedUnimplementedTodoServer()
 }
 
@@ -70,6 +149,15 @@ func (UnimplementedTodoServer) CreateTodo(context.Context, *CreateTodoRequest) (
 }
 func (UnimplementedTodoServer) GetTodos(context.Context, *Noparams) (*TodoItems, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTodos not implemented")
+}
+func (UnimplementedTodoServer) TrialTodo(context.Context, *Noparams) (*TodoItem, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TrialTodo not implemented")
+}
+func (UnimplementedTodoServer) GetTodosStream(*Noparams, Todo_GetTodosStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetTodosStream not implemented")
+}
+func (UnimplementedTodoServer) GetFileDownload(*Noparams, Todo_GetFileDownloadServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetFileDownload not implemented")
 }
 func (UnimplementedTodoServer) mustEmbedUnimplementedTodoServer() {}
 
@@ -120,6 +208,66 @@ func _Todo_GetTodos_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Todo_TrialTodo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Noparams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TodoServer).TrialTodo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Todo/trialTodo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TodoServer).TrialTodo(ctx, req.(*Noparams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Todo_GetTodosStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Noparams)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(TodoServer).GetTodosStream(m, &todoGetTodosStreamServer{stream})
+}
+
+type Todo_GetTodosStreamServer interface {
+	Send(*TodoItem) error
+	grpc.ServerStream
+}
+
+type todoGetTodosStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *todoGetTodosStreamServer) Send(m *TodoItem) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _Todo_GetFileDownload_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Noparams)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(TodoServer).GetFileDownload(m, &todoGetFileDownloadServer{stream})
+}
+
+type Todo_GetFileDownloadServer interface {
+	Send(*TypeFileDownload) error
+	grpc.ServerStream
+}
+
+type todoGetFileDownloadServer struct {
+	grpc.ServerStream
+}
+
+func (x *todoGetFileDownloadServer) Send(m *TypeFileDownload) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // Todo_ServiceDesc is the grpc.ServiceDesc for Todo service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -135,7 +283,22 @@ var Todo_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "getTodos",
 			Handler:    _Todo_GetTodos_Handler,
 		},
+		{
+			MethodName: "trialTodo",
+			Handler:    _Todo_TrialTodo_Handler,
+		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "getTodosStream",
+			Handler:       _Todo_GetTodosStream_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "getFileDownload",
+			Handler:       _Todo_GetFileDownload_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "todo.proto",
 }
