@@ -33,12 +33,12 @@ func main() {
 	// Now create api and then initialise routes
 	// REMOVE Fiber
 	// app := fiber.New()
-	mux := mux.NewRouter()
+	mx := mux.NewRouter()
 
-	mux.Use(corsMiddleware)
+	mx.Use(corsMiddleware)
 
 	// Configure socket.io
-	Api.InitializeRoutes(mux)
+	Api.InitializeRoutes(mx)
 
 	if prod {
 		logrus.Info("Starting Production Server...")
@@ -46,17 +46,15 @@ func main() {
 		logrus.Info("Starting Development Server...")
 	}
 
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", env.PORT), mux))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", env.PORT), mx))
 }
 
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Request came from ", r.RemoteAddr)
 		// Set CORS headers
-		// w.Header().Set("Access-Control-Allow-Origin", "http://192.168.7.33:5500")
-		w.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:5500")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, X-CSRF-Token")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 		// Handle preflight requests
 		if r.Method == "OPTIONS" {

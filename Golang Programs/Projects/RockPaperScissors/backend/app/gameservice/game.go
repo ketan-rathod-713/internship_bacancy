@@ -2,13 +2,16 @@ package gameservice
 
 import (
 	"context"
+	"fmt"
 	"rockpaperscissors/models"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Service interface {
 	CreateUser(user *models.User) error
+	SignInUser(user *models.User) error
 }
 
 type service struct {
@@ -16,7 +19,7 @@ type service struct {
 }
 
 func New(DB *mongo.Database) Service {
-	return service{
+	return &service{
 		DB: DB,
 	}
 }
@@ -25,21 +28,28 @@ func (s *service) gameColl(session mongo.Session) *mongo.Collection {
 	return session.Client().Database(s.DB.Name()).Collection("game")
 }
 
-func (s service) CreateUser(user *models.User) error {
+func (s *service) CreateUser(user *models.User) error {
 
 	// TODO
 	// check if user exists with given userid
 	// if exists then return error
 
-	_, err := s.DB.Collection("user").InsertOne(context.Background(), user)
+	result, err := s.DB.Collection("user").InsertOne(context.Background(), user)
 	if err != nil {
 		return err
+	}
+
+	switch v := result.InsertedID.(type) {
+	case primitive.ObjectID:
+		user.Id = &v
+	default:
+		fmt.Println("data is of unknown type")
 	}
 
 	return nil
 }
 
-func (s service) SignInUser(user *models.User) error {
+func (s *service) SignInUser(user *models.User) error {
 
 	// TODO
 	// check if user exists with given userid
@@ -47,6 +57,8 @@ func (s service) SignInUser(user *models.User) error {
 
 	// match userId and password and generate jwt token for it and update it in both database and for this user.
 	// i will match it when required. as normally for authorization purposes i will only verify the jwt token.
+
+	fmt.Println(user.UserId)
 
 	return nil
 }

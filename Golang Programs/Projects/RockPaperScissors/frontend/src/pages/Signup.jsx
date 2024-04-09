@@ -18,12 +18,12 @@ const SignupForm = () => {
     console.log(formData);
 
     // create post request to server
-     fetch({url: "http://localhost:8080/api/user", method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(formData)}).then(response => response.json()).then(data => console.log(data))
+     fetch("http://localhost:8080/api/user/", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(formData)}).then(response => response.json()).then(data => console.log(data))
   };
 
   return (
     <div className='signuppage'>
-      <form className="signup-form" onSubmit={handleSubmit}>
+      <form className="signup-form">
       <div>
         <label htmlFor="userId">User Id</label>
         <input type="text" id="userId" name="userId" value={formData.userId} onChange={handleChange} required />
@@ -37,7 +37,7 @@ const SignupForm = () => {
         <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
       </div>
       <div className='signnupbtn'>
-        <button>Submit</button>
+        <button onClick={handleSubmit}>Submit</button>
       </div>
     </form>
     </div>

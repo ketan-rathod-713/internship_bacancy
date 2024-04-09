@@ -11,13 +11,13 @@ const LoginForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // You can add form submission logic here
     console.log(formData);
 
     // create post request to server
-     fetch({url: "http://localhost:8080/api/user", method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(formData)}).then(response => response.json()).then(data => console.log(data))
+    fetch({url: "http://localhost:8080/api/user/signin", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(formData)}).then(response => response.json()).then(data => console.log(data)).catch(err => console.log(err)) 
   };
 
   return (

@@ -18,9 +18,9 @@ func New(db *mongo.Database) *api {
 
 // define user related routes
 func (a *api) Routes(parentRouter *mux.Router) {
+	parentRouter.HandleFunc("/signin", a.SignInUser).Methods("POST") // get userId and Password
 	parentRouter.HandleFunc("/", a.GetUsers).Methods("GET")
 	parentRouter.HandleFunc("/", a.PostUser).Methods("POST")
-	parentRouter.HandleFunc("/signin", a.SignInUser).Methods("POST") // get userId and Password
 
 	// auth related functionality
 
