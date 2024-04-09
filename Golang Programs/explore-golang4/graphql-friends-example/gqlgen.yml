@@ -1,0 +1,44 @@
+# all the schema files
+schema:
+  - graph/*.graphqls
+
+# where should be generated code
+exec:
+  filename: graph/generated.go
+  package: graph
+
+# generated models
+model:
+  filename: graph/model/models_gen.go
+  package: model
+
+# Where should the resolver implementations go?
+resolver:
+  layout: follow-schema
+  dir: graph
+  package: graph
+  filename_template: "{name}.resolvers.go"
+
+
+autobind:
+#  - "facebook/graph/model"
+
+models:
+  User:
+    model: facebook/models.User
+    fields:
+      following:
+        resolver: true
+      followers:
+        resolver: true
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.ID
+      - github.com/99designs/gqlgen/graphql.Int
+      - github.com/99designs/gqlgen/graphql.Int64
+      - github.com/99designs/gqlgen/graphql.Int32
+  Int:
+    model:
+      - github.com/99designs/gqlgen/graphql.Int
+      - github.com/99designs/gqlgen/graphql.Int64
+      - github.com/99designs/gqlgen/graphql.Int32

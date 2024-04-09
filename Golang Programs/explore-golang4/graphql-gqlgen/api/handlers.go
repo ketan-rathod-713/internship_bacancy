@@ -37,6 +37,17 @@ func (a *Api) Job(id string) (*model.JobListing, error) {
 
 	result := a.DB.Collection("joblisting").FindOne(context.TODO(), bson.M{"_id": objectId})
 
+	// JOB LISTING WITH TECHNOLOGY ID
+	type jobListingDB struct {
+		ID           string             `bson:"_id"`
+		Title        string             `bson:"title"`
+		Description  string             `bson:"description"`
+		Company      string             `bson:"company"`
+		URL          string             `bson:"url"`
+		JobProfile   string             `bson:"jobprofile"`
+		TechnologyId primitive.ObjectID `bson:"technology"`
+	}
+
 	var jobListing model.JobListing
 	err = result.Decode(&jobListing)
 
@@ -69,6 +80,18 @@ func (a *Api) JobProfile(id string) (*model.JobProfile, error) {
 // Mutations
 func (a *Api) CreateJobListing(input *model.CreateJobListingInput) (*model.JobListing, error) {
 
+	type jobListingDB struct {
+		ID           string                 `bson:"_id"`
+		Title        string                 `bson:"title"`
+		Description  string                 `bson:"description"`
+		Company      string                 `bson:"company"`
+		URL          string                 `bson:"url"`
+		JobProfile   *model.JobProfileInput `bson:"jobprofile"`
+		TechnologyId primitive.ObjectID     `bson:"technology"`
+	}
+
+	var jobListingDb jobListingDB
+
 	technology := input.Technology
 
 	// fmt.Println(*input.Technology.Name)
@@ -78,6 +101,7 @@ func (a *Api) CreateJobListing(input *model.CreateJobListingInput) (*model.JobLi
 	}
 
 	var techId string
+	var techObjectId primitive.ObjectID
 	if technology.ID != nil {
 		techId = *technology.ID
 	} else if technology.Name != nil {
@@ -94,14 +118,23 @@ func (a *Api) CreateJobListing(input *model.CreateJobListingInput) (*model.JobLi
 
 		techId = result.InsertedID.(primitive.ObjectID).Hex()
 		input.Technology.ID = &techId
+		techObjectId = result.InsertedID.(primitive.ObjectID)
 
 	} else {
 		// if both are null then return error
 		return nil, errors.New("error getting technology name or id")
 	}
 
+	jobListingDb = jobListingDB{
+		Title:        input.Title,
+		Description:  input.Description,
+		Company:      input.Company,
+		URL:          input.URL,
+		JobProfile:   input.JobProfile,
+		TechnologyId: techObjectId,
+	}
 	// create document of job
-	result, err := a.DB.Collection("joblisting").InsertOne(context.TODO(), input)
+	result, err := a.DB.Collection("joblisting").InsertOne(context.TODO(), jobListingDb)
 
 	fmt.Println(err)
 
