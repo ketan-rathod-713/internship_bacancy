@@ -102,9 +102,8 @@ func main() {
 
 	// NOTE You have to setup the default tag for fields having default or virtual/generated value in database, if you want to skip a default value definition when migrating, you could use default:(-), for example: TODO:
 
+	// Upsert / On Conflict TODO: TODO:
 
-	// Upsert / On Conflict TODO: TODO: 
-	
 }
 
 /*

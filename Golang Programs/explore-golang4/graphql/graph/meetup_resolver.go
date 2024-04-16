@@ -31,6 +31,9 @@ func (r *meetupResolver) User(ctx context.Context, obj *models.Meetup) (*models.
 	// This query is coming from dataloader middleware already.
 
 	// ? with data loader
+	// TODO understand how it works internally.
+
+	// kya loader k pas sare users start me hi aa jaege. or it will just cashe the data whatever it gets.
 	data, err := GetUserLoader(ctx).Load(obj.UserId)
 
 	fmt.Println("data", data)

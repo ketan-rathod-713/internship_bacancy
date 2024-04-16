@@ -1,6 +1,11 @@
-package go_methods_interfaces
+package main
 
-import "fmt"
+import (
+	"fmt"
+	"interfacesexample/example"
+	"interfacesexample/stringer"
+	typeassertion "interfacesexample/type_assertion"
+)
 
 type Vertex struct {
 	something int
@@ -36,6 +41,33 @@ func main() {
 
 	AnotherFunctionPtr(&v, 50)
 	fmt.Println(v)
+
+	fmt.Println("Describe interface")
+
+	example.DescribeEmptyInterface()
+
+	fmt.Println("Interface Nil value will produce a run time error because it is not a data type such that it can produce a compile time error")
+
+	example.InterfaceNilValue()
+
+	fmt.Println("Interface shape example implementing area method")
+
+	example.InterfaceExampleOfShapeCircle()
+
+	fmt.Println("Interface stringer example")
+
+	stringer.InterfaceStringerExample()
+	stringer.InterfaceStringerExample2()
+	stringer.InterfaceStringerExample3()
+
+	fmt.Println("Type Assertion of interface")
+	typeassertion.TypeAssertion1()
+	typeassertion.TypeAssertion2()
+
+	fmt.Println("Interface value good example")
+	typeassertion.InterfaceValueExample()
+
+	// TODO: IMP Type assertion of interface
 }
 
 // Note

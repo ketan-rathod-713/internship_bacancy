@@ -1,2 +1,0 @@
-Interfaces in go often ends with er. for eg. stringer reader etc.
-

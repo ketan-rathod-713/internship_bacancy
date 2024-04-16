@@ -3,9 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"myjson/example"
 )
 
 // lowecase means private
+// NOTE:
+// this is a note
 type course struct {
 	Name     string `json:"coursename"` // we can create aliases for it here in json ha ha
 	Price    int
@@ -19,6 +22,11 @@ func main() {
 	EncodeJson()
 	EncodeJsonMarshalIndent()
 	DecodeJson()
+
+	example.Example()
+	example.Example2()
+
+	example.Decoder()
 }
 
 // convert data to json // here instead of nil, it places null
@@ -60,6 +68,7 @@ func EncodeJsonMarshalIndent() {
 		panic(err)
 	}
 
+	// Final json returned is of type bytes and hence need to convert it in string
 	fmt.Println(string(finalJson))
 }
 
@@ -81,7 +90,7 @@ func DecodeJson() {
 
 	checkValid := json.Valid(jsonDataFromWeb)
 
-	if(checkValid){
+	if checkValid {
 		fmt.Println("JSON data is valid")
 		json.Unmarshal(jsonDataFromWeb, &lcoCourse)
 
@@ -103,6 +112,8 @@ func DecodeJson() {
 	// it is lookig complex but it is not.
 
 	for k, v := range myOnlineData {
-		fmt.Printf("Key is %k and value is %v and type is %T \n", k, v, v)
+		fmt.Printf("Key is %v and value is %v and type is %T \n", k, v, v)
 	}
 }
+
+// TODO: IMP Golang Json Important Topic

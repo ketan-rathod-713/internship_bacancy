@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sliceexample/example"
+)
 
 func main() {
 	var arr [10]int = [10]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
@@ -23,6 +26,11 @@ func main() {
 	fmt.Println("")
 	fmt.Println("Example of copy function")
 	exampleOfCopyFunc()
+
+	fmt.Println("Example running")
+
+	example.SliceExample()
+	example.SliceExample2()
 }
 
 func lengthAndCapOfSliceSame() {
@@ -47,7 +55,6 @@ func exampleOfCopyFunc() {
 	// now copy from specified index
 	copy(slice[3:], slice[0:])
 	// copy first 3 elements to next 3 elements in slice ha ha
-
 
 	fmt.Println(slice)
 }

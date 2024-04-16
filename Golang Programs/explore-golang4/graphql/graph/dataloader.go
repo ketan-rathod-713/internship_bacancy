@@ -22,6 +22,7 @@ func DataloaderMiddleware(db *pg.DB, next http.Handler) http.Handler {
 		userloader := UserLoader{
 			maxBatch: 100,
 			wait:     1 * time.Millisecond,
+			// I am giving  a function which will be used to load the users data
 			fetch: func(ids []string) ([]*models.User, []error) {
 				var users []*models.User
 
