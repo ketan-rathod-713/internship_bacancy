@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  api: 
+    container_name: api_container
+    build: ./nodejs-containerization
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nodejs-containerization:/usr/app
+      - /user/app/node_modules
+   
+  redis:
+    image: redis:alpine 
+    container_name: redis_c
+    ports:
+      - "8080:6379"
