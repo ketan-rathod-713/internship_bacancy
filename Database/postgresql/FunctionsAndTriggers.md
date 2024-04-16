@@ -1,16 +1,19 @@
- SQL FUNCTIONS
+# SQL FUNCTIONS
  
- You can create SQL scalar functions and SQL table functions.
+You can create SQL scalar functions and SQL table functions.
  
- PL/pgSQL is a procedural programming language extension for PostgreSQL, which allows developers to write stored procedures and functions in a more procedural style, akin to languages like PL/SQL in Oracle or T-SQL in Microsoft SQL Server.
+PL/pgSQL is a procedural programming language extension for PostgreSQL, which allows developers to write stored procedures and functions in a more procedural style, akin to languages like PL/SQL in Oracle or T-SQL in Microsoft SQL Server.
  
- Variables: You can declare variables to store values within PL/pgSQL functions.
+Variables: You can declare variables to store values within PL/pgSQL functions.
 Control Structures: PL/pgSQL supports control structures like IF, ELSEIF, ELSE, LOOP, WHILE, and FOR.
 Exception Handling: You can handle exceptions using BEGIN ... EXCEPTION ... END blocks to catch and handle errors gracefully.
+
 Cursors: PL/pgSQL allows you to work with cursors to process a set of rows returned by a query.
 Transactions: You can manage transactions explicitly using BEGIN, COMMIT, and ROLLBACK statements within your functions
 
-Simple example
+## Example
+
+```
 CREATE OR REPLACE FUNCTION calculate_sum(a INTEGER, b INTEGER)
 RETURNS INTEGER AS $$
 DECLARE
@@ -20,8 +23,11 @@ BEGIN
     RETURN result;
 END;
 $$ LANGUAGE plpgsql;
+```
 
-USING IF ELSE
+## Example using if else
+
+```
 CREATE OR REPLACE FUNCTION is_positive(num INTEGER)
 RETURNS BOOLEAN AS $$
 BEGIN
@@ -32,8 +38,11 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
+```
 
-Looping
+## Example using loops
+
+```
 CREATE OR REPLACE FUNCTION print_numbers()
 RETURNS VOID AS $$
 DECLARE
@@ -46,8 +55,11 @@ BEGIN
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
+```
 
-Factorial 
+## Example Factorial 
+
+```
 CREATE OR REPLACE FUNCTION factorial(n INTEGER)
 RETURNS INTEGER AS $$
 BEGIN
@@ -58,6 +70,7 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
+```
 
 -- CREATE OR REPLACE FUNCTION get_student_info()
 -- RETURNS SETOF school.student AS $$
