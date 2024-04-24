@@ -1,0 +1,51 @@
+db.inventory.insertMany([
+   { item: "journal", qty: 25, size: { h: 14, w: 21, uom: "cm" }, status: "A" , tags: ["blank", "red"], instock: [ { warehouse: "A", qty: 5 }, { warehouse: "C", qty: 15 } ]},
+   { item: "notebook", qty: 50, size: { h: 8.5, w: 11, uom: "in" }, status: "A", tags: ["plain", "green", "good"], instock: [ { warehouse: "C", qty: 5 } ]  },
+   { item: "paper", qty: 100, size: { h: 8.5, w: 11, uom: "in" }, status: "D" , tags: ["red", "plain", "green"], instock: [ { warehouse: "A", qty: 60 }]},
+   { item: "planner", qty: 75, size: { h: 22.85, w: 30, uom: "cm" }, status: "D", tags: ["good", "yellow"], instock: [ { warehouse: "A", qty: 40 }]},
+   { item: "postcard", qty: 45, size: { h: 10, w: 15.25, uom: "cm" }, status: "A", tags: ["wow", "good"], instock: [ { warehouse: "B", qty: 15 }]}
+]);
+
+// Normal Find Condition
+// db.inventory.find({
+//     $or: [
+//         {
+//             "size.h": {
+//                 $lt: 15,
+//                 $gt: 10
+//             }
+//         },
+//         {
+//             "status": "A"
+//         },
+//     ]
+// })
+
+// // To find the given tag in array
+// db.inventory.find({
+//     tags: "blank"
+// })
+
+// // find array which contains this 2 elements // arrays which are supersets of this array.
+// db.inventory.find({
+//     tags: {
+//         $all: ["plain", "green"]
+//     }
+// })
+
+// // compare exactly equal arrays
+// db.inventory.find({
+//     tags: ["blank", "red"]
+// })
+
+// query an array of embedded documents
+
+// This query will not return any documents because the exact field order matter here.
+// db.inventory.find({
+//     instock: {
+//         qty: 5,
+//         warehouse: "A"
+//     }
+// })
+
+// Below query will work in this case
