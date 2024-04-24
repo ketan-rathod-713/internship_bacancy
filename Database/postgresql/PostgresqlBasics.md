@@ -885,7 +885,326 @@ FROM EmployeeHierarchy;
 ###### TODO:Data modifying statements in WITH
 
 
-## Data types
+# Data types
+
+## Numeric Types [ 8.1 ]
+
+- Numeric types consist of two-, four-, and eight-byte integers, four- and eight-byte floating-point numbers, and selectable-precision decimals.
+
+- Types
+    - smallint - 2
+    - integer - 4
+    - bigint - 8 
+    - decimal  - variable
+    - numeric - variable
+    - real - 4
+    - double precision - 8
+    - smallserial - 2
+    - serial - 4
+    - bigserial - 8 - large autoincrementing integer
+
+- The types smallint, integer, and bigint store whole numbers.
+
+### Arbitrary precision numbers
+
+- numeric type used when required most accuracy. reccommended when storing monetory information.
+- calculations on numeric is very slow compared to integer types or floating point.
+- SOME TERMINOLOGY : The precision of a numeric is the total count of significant digits in the whole number, that is, the number of digits to both sides of the decimal point. The scale of a numeric is the count of decimal digits in the fractional part, to the right of the decimal point. So the number 23.5141 has a precision of 6 and a scale of 4. Integers can be considered to have a scale of zero.
+- max precision and max scale can be configured.
+- NUMERIC(precision, scale) or NUMERIC(precision), NUMERIC
+- Always wew should explicitly define precision and scale..
+
+- NUMERIC(3, 1) it will round values to 1 decimal point and can store between -99.9 and 99.9, inclusive.
+- type decimal and numeric are equivalent.
+- When rounding values, the numeric type rounds ties away from zero, while (on most machines) the real and double precision types round ties to the nearest even number.
+
+## FLoating point types
+
+
+## Serial types
+
+- smallserial, serial, bigserial are not types just a notational convenience for creating unique identifier column.
+
+```
+CREATE TABLE tablename (
+    colname SERIAL
+);
+is equivalent to specifying:
+
+CREATE SEQUENCE tablename_colname_seq AS integer;
+CREATE TABLE tablename (
+    colname integer NOT NULL DEFAULT nextval('tablename_colname_seq')
+);
+ALTER SEQUENCE tablename_colname_seq OWNED BY tablename.colname;
+```
+
+## Monetory types
+
+The money type stores a currency amount with a fixed fractional precision;
+
+
+## Boolean Type
+
+boolean	1 byte	state of true or false
+
+```
+CREATE TABLE test1 (a boolean, b text);
+INSERT INTO test1 VALUES (TRUE, 'sic est');
+
+'yes'::boolean
+```
+
+## Enumerated Types
+
+Enumerated (enum) types are data types that comprise a static, ordered set of values. 
+
+### Declaration
+
+```
+CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');
+
+CREATE TABLE person (
+    name text,
+    current_mood mood
+);
+INSERT INTO person VALUES ('Moe', 'happy');
+SELECT * FROM person WHERE current_mood = 'happy';
+```
+
+### Ordering of values
+
+According to the sequence in which they are listed. if order by 'enumType' then it will follow that sequence.
+
+### Type safety
+
+- each enum data type is different and can not be comparable with other enum types.
+- Enum labels are case sensitive...
+
+### Geometric Types
+
+- Points
+- Lines
+- Line segments
+- Boxes 
+- Paths
+- Polygons
+- Circles
+
+### Network Address Types [ looking good if want to work in this ]
+
+
+```
+// This is not valid if mood and happiness are enums
+SELECT person.name, holidays.num_weeks FROM person, holidays
+  WHERE person.current_mood = holidays.happiness;
+
+// but if we really want to compare the underlying text then we can do explicit casting
+SELECT person.name, holidays.num_weeks FROM person, holidays
+  WHERE person.current_mood::text = holidays.happiness::text;
+
+```
+
+## Mathematical functions and operators [9.3]
+
+### Mathematical Operators
+
+```
+numeric_type + numeric_type → numeric_type
++ numeric_type → numeric_type
+numeric ^ numeric → numeric
+|/ double precision → double precision // Square Root
+||/ double precision → double precision // Cube root
+@ numeric_type → numeric_type // Absolute value
+integral_type & integral_type → integral_type // Bitwise AND
+integral_type | integral_type → integral_type // Bitwise OR
+integral_type # integral_type → integral_type // Bitwise Exclusive OR
+~ integral_type → integral_type // Bitwise NOT
+integral_type << integer → integral_type // Bitwise Shift Left
+integral_type >> integer → integral_type // Bitwise Shift Right
+```
+
+### Mathematical Functions
+
+```
+abs ( numeric_type ) → numeric_type // absolute value
+cbrt ( double precision ) → double precision // cube root
+ceil ( numeric ) → numeric // Nearest integer greater than or equal to argument
+ceil ( double precision ) → double precision
+degrees ( double precision ) → double precision // convert radians to degrees
+div ( y numeric, x numeric ) → numeric // 9/2 == 4 // truncates towards 0
+
+and many more functions like exp, power, pi(), log, lcm, gcd.
+
+IMPORTANT : it requires numeric type hence we need to cast floating point numbers to this numeric types in order to use this function.
+round ( v numeric, s integer ) → numeric  // Rounds v to s decimal places. Ties are broken by rounding away from zero. // for eg. round(42.4382, 2) → 42.44
+```
+
+## Date Time Types
+
+date - 4 bytes - resolution of 1 day
+interval [fields] [(p)] - 16 bytes - time interval - resolution of 1 micro second
+time [ (p) ] [ without time zone ] - 8 bytes - time of day ( no date )
+time [ (p) ] with time zone - 12 bytes - time with timezone ( no date)
+timestamp [ (p) ] [ without time zone ] - both date and time
+similarly with tiimezone 
+
+-> time, timestamp and interval accepts optional precison value p which specifies no of fractional digits retained in seconds field. The allowed range of p is from 0 to 6.
+
+->Interval has additional option given below.
+
+    -YEAR
+    -MONTH
+    -DAY
+    -HOUR
+    -MINUTE
+    -SECOND
+    -YEAR TO MONTH
+    -DAY TO HOUR
+    -DAY TO MINUTE
+    -DAY TO SECOND
+    -HOUR TO MINUTE
+    -HOUR TO SECOND
+    -MINUTE TO SECOND
+
+if both fields and p are given then fields can only be seconds as precision only applies to seconds.
+
+- Remember that any date or time literal input needs to be enclosed in single quotes, like text strings.
+
+- Possible Inputs for date field : https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME-DATE-TABLE
+
+
+- CURRENT_DATE : to get current date.
+
+- The date/time style can be selected by the user using the SET datestyle command, the DateStyle parameter in the postgresql.conf configuration file, or the PGDATESTYLE environment variable on the server or client.
+
+### Interval input
+
+- Syntax `[@] quantity unit [quantity unit...] [direction]`
+
+- Quantity is a number
+- unit is microsecond, second, minute, day, week, month, year etc.
+- direction can be `ago` or empty. Ago negates whole date.
+
+
+### Date time functions and operators
+
+REF : https://www.postgresql.org/docs/current/functions-datetime.html
+
+- Dates and timestamp are all comparable.
+- times and intervals can only be compared with their type.
+
+- Date time operators
+    - date + integer = date
+    - date + interval → timestamp
+    - date + time → timestamp
+    - interval + interval → interval
+    - timestamp + interval → timestamp
+    - time + interval → time
+    - interval → interval
+    - date - date → integer
+    - date - integer → date
+    - date - interval → timestamp
+    - time - time → interval
+    - time - interval → time
+    - time '05:00' - interval '2 hours' → 03:00:00
+    - timestamp - interval → timestamp
+    - interval - interval → interval
+    - timestamp - timestamp → interval
+    - interval * double precision → interval
+    - Multiply an interval by a scalar
+    - interval '1 second' * 900 → 00:15:00
+    - interval '1 day' * 21 → 21 days
+    - interval '1 hour' * 3.5 → 03:30:00
+    - interval / double precision → interval
+    - Divide an interval by a scalar
+    - interval '1 hour' / 1.5 → 00:40:00
+
+
+### Date time functions
+
+- view inside sql practice folder.
+
+### 9.18 Conditional Expressions
+
+#### Case
+
+```
+CASE WHEN condition THEN result
+     [WHEN ...]
+     [ELSE result]
+END
+
+example :
+
+
+SELECT a,
+       CASE WHEN a=1 THEN 'one'
+            WHEN a=2 THEN 'two'
+            ELSE 'other'
+       END
+    FROM test;
+```
+
+# Functions And Operators [9]
+
+## Logical Operators [9.1]
+
+```
+boolean AND boolean → boolean
+boolean OR boolean → boolean
+NOT boolean → boolean
+```
+
+## Comparison Functions And Operators [9.2]
+
+-  <> is the standard SQL notation for “not equal”. != is an alias, which is converted to <> at a very early stage of parsing. Hence, it is not possible to implement != and <> operators that do different things.
+
+- Normal Operators : <>, !=, =, >, <, <=, >= etc.
+
+### Comparison Predicates
+
+```
+datatype BETWEEN datatype AND datatype → boolean // 2 BETWEEN 1 AND 3 returns TRUE
+datatype NOT BETWEEN datatype AND datatype → boolean // negation of BETWEEN
+datatype BETWEEN SYMMETRIC datatype AND datatype → boolean // between after sorting the two endpoint values
+same for negation
+
+datatype IS DISTINCT FROM datatype → boolean // Not equal, treating null as a comparable value.
+for eg. 1 IS DISTINCT FROM NULL → t (rather than NULL) and NULL IS DISTINCT FROM NULL → f (rather than NULL)
+
+datatype IS NULL → boolean
+datatype IS NOT NULL → boolean
+
+boolean IS TRUE → boolean and negation
+
+boolean IS UNKNOWN → boolean // for eg. NULL::boolean IS UNKNOWN → t (rather than NULL)
+```
+
+## Mathematical Functions and Operators [9.3]
+
+Refere Previous Notes
+
+## String Functions and Operators
+
+Strings in this context include values of the types character, character varying, and text. They will also accept character varying argument which will be converted to text before applying function which can remove trailing spaces in character value.
+
+```
+text || text → text // Concatination
+text || anynonarray → text // for eg. "good" || 24 -> "good24"  
+anynonarray || text → text
+
+
+-- Returns number of characters in string
+char_length ( text ) → integer
+character_length ( text ) → integer
+
+-- lower case and upper case
+lower ( text ) → text
+upper ( text ) → text
+
+
+```
+
 
 ## Indexes
 
@@ -911,3 +1230,4 @@ SELECT content FROM test1 WHERE id = constant;
 - Lots of index algorithms
 - By default, the CREATE INDEX command creates B-tree indexes
 - To create using particular algorithm `CREATE INDEX name ON table USING HASH (column);`
+
