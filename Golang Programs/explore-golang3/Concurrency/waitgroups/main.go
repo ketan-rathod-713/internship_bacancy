@@ -19,7 +19,7 @@ func main() {
 
 func goodbye(wg *sync.WaitGroup) {
 	fmt.Println("Good bye")
-	wg.Done()
+	defer wg.Done()
 }
 
 func HelloWorld(wg *sync.WaitGroup) {

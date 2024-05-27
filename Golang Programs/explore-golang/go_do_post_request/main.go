@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -30,7 +30,7 @@ func PerformPostRequest() {
 
 	defer response.Body.Close()
 
-	contentBytes, _ := ioutil.ReadAll(response.Body)
+	contentBytes, _ := io.ReadAll(response.Body)
 	fmt.Println(string(contentBytes))
 }
 

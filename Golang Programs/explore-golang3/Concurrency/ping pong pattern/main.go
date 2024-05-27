@@ -33,8 +33,10 @@ func player(name string, table chan *Ball) {
 	// it will try to grab the ball and increase the balls hits and then sleep and return back to table
 	for {
 		ball := <-table
+		// It is essential to put below logic before adding something to channel
 		ball.hits++
 		fmt.Println(name, ball.hits)
+
 		table <- ball
 	}
 }

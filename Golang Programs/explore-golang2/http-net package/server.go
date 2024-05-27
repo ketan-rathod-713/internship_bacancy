@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"text/template"
 
@@ -88,7 +89,7 @@ func main() {
 
 	// File Server To host static files.
 	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/files/", http.StripPrefix("/files/", fs)) //TODO: StripPrefix creates a new handler. ANd how it will see it relative to our folder and price.
+	http.Handle("/public/", http.StripPrefix("/public/", fs)) //TODO: StripPrefix creates a new handler. ANd how it will see it relative to our folder and price.
 
 	// Form Handler
 	http.HandleFunc("/form", formHandler)

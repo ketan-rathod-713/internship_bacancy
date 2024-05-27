@@ -71,7 +71,6 @@ func GetStudents() {
 	defer rows.Close()
 	for rows.Next() {
 		s := Student{}
-
 		err = rows.Scan(&s.Id, &s.Name, &s.Address, &s.City, &s.Pincode, &s.BirthDate, &s.Age)
 		CheckError(err)
 

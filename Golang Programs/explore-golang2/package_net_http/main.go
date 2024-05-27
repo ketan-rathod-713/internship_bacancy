@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/fs"
 	"net/http"
 	"sync"
 	// t "crypto/tls" // working with crypto/tls package
@@ -45,8 +44,6 @@ func main() {
 	// http.HandleFunc("/file2", func(w http.ResponseWriter, r *http.Request) {
 	// 	http.ServeFileFS(w, r, )
 	// })
-
-	
 
 	// listens on tcp connection and calls serve method http.Serve(listener, handler)
 	fmt.Println("Serve started on port 8080")

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -30,7 +30,7 @@ func PerformPostFormRequest() {
 	// why we need io util here
 	// DOUBT
 	// what is the type of response.Body
-	contentBytes, _ := ioutil.ReadAll(response.Body)
+	contentBytes, _ := io.ReadAll(response.Body)
 
 	fmt.Println("Type of Response.Body is ", reflect.TypeOf(response.Body))
 	fmt.Println(string(contentBytes))

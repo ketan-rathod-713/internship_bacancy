@@ -1,0 +1,14 @@
+syntax = "proto3" 
+
+// if not specified then assumes proto version 2
+enum Launguage {
+    Hindi = 1;
+    English = 2;
+    Gujarati = 3;
+}
+
+message Student {
+    string Name = 1;
+    int32 Age = 2;
+    Launguage language = 3;
+}
