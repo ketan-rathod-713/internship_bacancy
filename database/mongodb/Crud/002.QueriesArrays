@@ -1,0 +1,49 @@
+db.inventory.insertMany( [
+   { item: "journal", instock: [ { warehouse: "A", qty: 5 }, { warehouse: "C", qty: 15 } ] },
+   { item: "notebook", instock: [ { warehouse: "C", qty: 5 } ] },
+   { item: "paper", instock: [ { warehouse: "A", qty: 60 }, { warehouse: "B", qty: 15 } ] },
+   { item: "planner", instock: [ { warehouse: "A", qty: 40 }, { warehouse: "B", qty: 5 } ] },
+   { item: "postcard", instock: [ { warehouse: "B", qty: 15 }, { warehouse: "C", qty: 35 } ] }
+]);
+
+// To find all the documents based on condition
+
+// it will return one document which has this one field.
+// db.inventory.find({
+//     instock: {
+//         warehouse: "A",
+//         qty: 5
+//     }
+// })
+
+// // IMPORTANT: This query will not result in any documents.
+// // Beacause Order of fields matter in nested array queries. keep it in mind.
+// db.inventory.find({
+//     instock: {
+//         qty: 5,
+//         warehouse: "A"
+//     }
+// })
+
+// // specify query condition on field embedded in array
+// db.inventory.find({
+//     "instock.qty": {
+//         "$gt": 4,
+//         "$lt": 10
+//     }
+// })
+
+// Use array index to query for field in nested document 
+// It should return only one document which as qty 5 on 1st elment of array.
+db.inventory.find({
+    "instock.1.qty": 5
+})
+
+// Specify multiple conditions for an array of documents.
+
+// use $elemMatch to specify criteria for nested documents such that
+// at least one embedded document satisfy all conditions 
+
+// This will find a document which has instock array nested objects any one can satisfy
+// below conditions // ANY ONE NOTE THAT...
+db.inventory.find( { "instock": { $elemMatch: { qty: { $gt: 10, $lte: 20 } } } } )

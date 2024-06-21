@@ -8,7 +8,6 @@ import (
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Queries
@@ -88,10 +87,10 @@ func (a *Api) CreateUser(ctx context.Context, input model.UserInput) (*models.Us
 	}
 
 	var user models.User = models.User{
-		ID: ,
+		ID: result.InsertedID,
 	}
-	
-	return users, nil
+
+	return user, nil
 }
 
 // how to call this method once again we got nested query
