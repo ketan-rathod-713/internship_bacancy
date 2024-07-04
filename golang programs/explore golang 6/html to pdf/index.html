@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Quotation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 10px 40px;
+            font-size: 14px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 10px 0px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-weight: bold;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .header .logo {
+            width: 60px;
+            height: 60px;
+            overflow: hidden;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+        }
+
+        .header .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .header .pagenum {
+            font-size: 16px;
+        }
+
+        .quotation-table,
+        .vesselport-table,
+        .company-customer-table {
+            width: 100%;
+            border-collapse: collapse;
+            /* border: 1px solid #ccc; */
+        }
+
+        .company-customer-table th,
+        .company-customer-table td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .company-customer-table {
+            outline: 1px solid #c9c9c9;
+        }
+
+        .company-customer-table th {
+            background-color: white;
+            font-weight: bold;
+            font-size: 18px;
+            color: rgb(32, 32, 32);
+            padding: 30px 20px;
+        }
+
+        .company-customer-table td {
+            background-color: #fafafa;
+            font-size: 17px;
+        }
+
+        /* columns 50 50 percent share */
+        .company-customer-table td:first-child,
+        .quotation-table td:first-child,
+        .vessel-port-table td:first-child {
+            width: 50%;
+        }
+
+        /* styles related to quotation table */
+
+        .quotation-table-wrapper {
+            border: 1px solid grey;
+            margin-top: 70px;
+            border-radius: 5px;
+            padding: 10px 10px 25px 10px;
+        }
+
+        .quotation-table-wrapper .utility {
+            padding: 20px 0px 10px 0px;
+        }
+
+        .quotation-table-wrapper .heading {
+            font-weight: bold;
+            font-size: 18px;
+            padding: 50px 20px 30px 20px;
+            border-bottom: 1px solid #c9c9c9;
+            /* margin-bottom: 15px; */
+        }
+
+        .quotation-table {
+            background-color: white;
+            width: 100%;
+        }
+
+
+        .quotation-table td {
+            padding: 2px 20px;
+            font-size: 18px;
+        }
+
+        /* styles related to vessel and port table */
+
+        .vesselport-table-wrapper {
+            border: 1px solid grey;
+            margin-top: 70px;
+            border-radius: 5px;
+            /* padding: 10px 10px 25px 10px; */
+        }
+
+        .vesselport-table-wrapper .utility {
+            background-color: #f3f3f3f8;
+            padding: 20px 0px;
+        }
+
+        .vesselport-table-wrapper .heading {
+            font-weight: bold;
+            font-size: 18px;
+            padding: 30px 20px 30px 20px;
+            border-bottom: 1px solid #c9c9c9;
+            /* margin-bottom: 15px; */
+        }
+
+        .vesselport-table {
+            width: 100%;
+
+        }
+
+
+        .vesselport-table td {
+            padding: 2px 20px;
+            font-size: 18px;
+        }
+
+        /* section 4 styles */
+        .section4 {
+            margin-top: 40px;
+            padding: 10px;
+        }
+
+        .section4 .heading {
+            font-size: 18px;
+        }
+
+        .section4 table {
+            width: 100%;
+            border-collapse: collapse;
+            outline: gray;
+        }
+
+
+        /* utility styles */
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="https://picsum.photos/200/200" alt="Company Logo">
+        </div>
+        <h1>Price Quotation</h1>
+        <div class="pagenum">
+            Page 1 of 2
+        </div>
+    </div>
+
+    <div class="company-customer-table-wrapper">
+        <table class="company-customer-table">
+            <tr>
+                <th>Customer Information</th>
+                <th>Produced By</th>
+            </tr>
+            <tr>
+                <td>FRONTLINE MANAGEMENT C/O/AE/DUBAI</td>
+                <td>
+                    <div class="company-name-heading bold">Shell Marine Products</div>
+                    <div class="company-country">Singapore</div>
+                    <div class="company-vat-number"><b>VAT number</b> 100393921000003</div>
+                    <div class="company-uen-number"><b>UEN</b> 198902087C</div>
+                    <div class="company-address">A business division of Shell Eastern Trading (Pte) LTD
+                        Metropolis Tower 1, 9 NorthBuona Vista #07-01
+                        Singapore 138588</div>
+                    <div class="product-company-url"><b>Internet: </b><a
+                            href="http://www.shell.com">http://www.shell.com</a></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="quotation-table-wrapper">
+        <div class="heading">Quotation Information</div>
+        <div class="utility">
+            <table class="quotation-table">
+                <tr>
+                    <td>Account Number</td>
+                    <td>0011831660</td>
+                </tr>
+                <tr>
+                    <td>Customer PO Number</td>
+                    <td>07012024VENTURE</td>
+                </tr>
+                <tr>
+                    <td>Quotation Date</td>
+                    <td>02 July 2024</td>
+                </tr>
+                <tr>
+                    <td>Quotation Number</td>
+                    <td>6512065231</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="vesselport-table-wrapper">
+        <div class="heading">Vessel And Port Information</div>
+        <div class="utility">
+            <table class="vesselport-table">
+                <tr>
+                    <td>Vessel Name</td>
+                    <td>VENTURE</td>
+                </tr>
+                <tr>
+                    <td>Vessel IMO</td>
+                    <td>8855566</td>
+                </tr>
+                <tr>
+                    <td>Vessel Number</td>
+                    <td>11015771</td>
+                </tr>
+                <tr>
+                    <td>Deliver Port</td>
+                    <td>BORYEONG, South Korea</td>
+                </tr>
+                <tr>
+                    <td>Requested Delivery Date:</td>
+                    <td>13 July 2024</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="section4">
+        <h2 class="heading">Price Information</h1>
+
+            <p class="info">Prices quoted today are, and may change, between this date and the ordering date according to your
+                current written agreement with SMP and includes all the eligible discounts and price differential.</p>
+
+            <div class="utility">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                Product Name
+                            </th>
+                            <th>
+                                Package Type
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>
+                                Relevent Conversion
+                            </th>
+                            <th>
+                                Unit Price
+                            </th>
+                            <th>
+                                Price
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>
+                                Shell Alexia 70 BULK
+                                Engine Oils - Cylinder and System
+                                Lubes
+                                Material code: 500011356
+                            </td>
+                            <td>
+                                BULK
+                            </td>
+                            <td>
+                                1000L
+                            </td>
+                            <td>
+                                1,00,0000L
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                List Prize
+                            </td>
+                            <td>
+                                515.00 USD / 100 L15
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+
+    <div style="height: 500px;">
+
+    </div>
+</body>
+
+</html>
