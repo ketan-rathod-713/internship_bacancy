@@ -22,13 +22,14 @@ func (s standardRand) randomInt(max int) int {
 // 	return numerator / int(rand.Intn(10))
 // }
 
-func divByRand(numerator int, r randomNumberGenerator) int {
-	return numerator / r.randomInt(10)
+// seed must be specified :- which is max
+func divByRand(numerator int, max int, r randomNumberGenerator) int {
+	return numerator / r.randomInt(max)
 }
 
 func main() {
 	sr := standardRand{}
-	ans := divByRand(20, sr)
+	ans := divByRand(20, 10, sr)
 
 	fmt.Println(ans)
 }
