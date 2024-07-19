@@ -1,0 +1,16 @@
+goos: linux
+goarch: amd64
+pkg: profiling_example
+cpu: 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz
+BenchmarkMemoryWaste-8   	 2605852	       464.2 ns/op	    2040 B/op	       8 allocs/op
+BenchmarkMemoryWaste-8   	 2606833	       460.9 ns/op	    2040 B/op	       8 allocs/op
+BenchmarkMemoryWaste-8   	 2348844	       473.1 ns/op	    2040 B/op	       8 allocs/op
+BenchmarkMemoryWaste-8   	 2666952	       461.4 ns/op	    2040 B/op	       8 allocs/op
+BenchmarkMemoryWaste-8   	 2285784	       474.0 ns/op	    2040 B/op	       8 allocs/op
+BenchmarkMemoryWaste-8   	 2603580	       460.1 ns/op	    2040 B/op	       8 allocs/op
+BenchmarkMemoryWaste-8   	 2630628	       466.6 ns/op	    2040 B/op	       8 allocs/op
+BenchmarkMemoryWaste-8   	 2427062	       458.9 ns/op	    2040 B/op	       8 allocs/op
+BenchmarkMemoryWaste-8   	 2551011	       475.3 ns/op	    2040 B/op	       8 allocs/op
+BenchmarkMemoryWaste-8   	 2488670	       492.9 ns/op	    2040 B/op	       8 allocs/op
+PASS
+ok  	profiling_example	16.654s
