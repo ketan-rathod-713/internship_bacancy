@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  sftp:
+    image: southrivertech/titansftp-sftp
+    ports:
+      - "2222:2200"  # Map container's port 22 to host's port 2222
+    volumes:
+      - /tmp/server1:/data/incoming   # Bind the host's Desktop directory to the admin's home directory
+    environment:  
+      SFTP_USERS:
+        ketan:123:::tmp/server1 

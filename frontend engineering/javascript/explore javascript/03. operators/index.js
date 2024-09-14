@@ -33,3 +33,9 @@ console.log("value of a is", a)
 for (let i = 0, j = 0; i < 5; i++, j++) {
     console.log(i, j)
 }
+
+
+let value = 3
+
+// negation operator
+console.log(-value)

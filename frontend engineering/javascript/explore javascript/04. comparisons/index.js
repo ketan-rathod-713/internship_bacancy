@@ -1,20 +1,23 @@
 console.log("comparisons in javascript")
 
+// Comparisons with null
 console.log(5 > null) // true
 console.log(0 == null) // false
 console.log(0 >= null)  // true
-console.log(undefined == null) // sticky couple, true
-console.log(0 >= undefined) // false
 
+// STICKY COUPLE
+console.log(undefined == null) // sticky couple, true
+
+// Comparisons with string
 console.log("02" > 1)  // true
 console.log(1 > "2")  // false
 
 // == and <=, >= ka kam karne ka tarika thoda alag he.
 // undefined ke sath kuch bhi karne se false value hi aayegi
 
-console.log(undefined > -3)
-console.log(undefined < 1)
-console.log(undefined == 0)
+console.log(undefined > -3) // false
+console.log(undefined < 1)  // false
+console.log(undefined == 0)  // false
 
 // above 3 will returns false
 

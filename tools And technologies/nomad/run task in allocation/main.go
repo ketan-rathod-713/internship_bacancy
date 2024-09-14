@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"sort"
 	"strings"
 	"sync"
@@ -75,7 +76,7 @@ func main() {
 	}
 
 	// We have same jobId and Namespace for our project
-	var jobId string = "4a1cb83b-1c37-482c-82f9-36bd045164f3-a721cb72-7401-4db4-bcd4-480e5e9da69b-2-minecraft-b0c42615-456f-46e5-9142-c3c421fdea86"
+	var jobId string = "b0a78657-2d8e-45ec-861f-f31ef129c39c-90b6e011-849e-48cc-9350-f9b36e542627-Minecraft-130263c6-b049-4e93-b0c4-848df1380674"
 	var namespace string = jobId
 	allocs, _, err := client.Jobs().Allocations(jobId, true, &api.QueryOptions{
 		Namespace: namespace,
@@ -103,17 +104,17 @@ func main() {
 		log.Panic("error in getting allocation:", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 
 	// initialize custom io
-	io := NewIO(cancel)
+	// io := NewIO(cancel)
 
-	stdin := io
-	stdout := io
-	stderr := io
+	stdin := os.Stdin
+	stdout := os.Stdout
+	stderr := os.Stdout
 
-	io.readCommand("ls -ltr")
+	// io.readCommand("ls -ltr")
 
 	command := []string{"/bin/sh"}
 	log.Println("Command we are executing is", command)
@@ -126,10 +127,10 @@ func main() {
 		log.Println("error", err)
 	}
 
-	fmt.Println("")
-	fmt.Println("")
-	fmt.Println("Printing io output buffer \n", formattedOutput(string(io.outputBuffer)))
-	fmt.Println("")
+	// fmt.Println("")
+	// fmt.Println("")
+	// fmt.Println("Printing io output buffer \n", formattedOutput(string(io.outputBuffer)))
+	// fmt.Println("")
 
 	log.Println("Process exited with exit code", exitCode)
 }
